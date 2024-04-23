@@ -1,9 +1,12 @@
 package com.example.eordermanagerapi.Controller;
 
-import com.example.eordermanagerapi.Entities.LoginResponse;
-import com.example.eordermanagerapi.Entities.LoginUserDto;
-import com.example.eordermanagerapi.Entities.RegisterUserDto;
+import com.example.eordermanagerapi.DTO.UserDTO.LoginResponse;
+import com.example.eordermanagerapi.DTO.LoginUserDto;
+import com.example.eordermanagerapi.DTO.UserDTO.SignUPAnswerDto;
+import com.example.eordermanagerapi.DTO.UserDTO.SignUpDTO;
 import com.example.eordermanagerapi.Entities.User;
+import com.example.eordermanagerapi.Fasada.Fasada;
+import com.example.eordermanagerapi.Fasada.commands.CreateNewUserCommand;
 import com.example.eordermanagerapi.Security.JwtService;
 import com.example.eordermanagerapi.Service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +22,22 @@ import java.util.Optional;
 public class AuthenticationController {
     private final JwtService jwtService;
 
+    private final Fasada fasada;
     private final AuthenticationService authenticationService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
+    public AuthenticationController(JwtService jwtService,
+                                    Fasada fasada,
+                                    AuthenticationService authenticationService) {
         this.jwtService = jwtService;
+        this.fasada = fasada;
         this.authenticationService = authenticationService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
-        User registeredUser = authenticationService.signup(registerUserDto);
-
-        return ResponseEntity.ok(registeredUser);
+    public ResponseEntity<SignUPAnswerDto> register(@RequestBody SignUpDTO signUpDTO) {
+        SignUPAnswerDto createdUserDto = fasada.handle(CreateNewUserCommand.from(signUpDTO));
+        return ResponseEntity.ok(createdUserDto);
     }
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         System.out.println("weszło");

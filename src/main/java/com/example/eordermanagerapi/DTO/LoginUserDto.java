@@ -1,4 +1,4 @@
-package com.example.eordermanagerapi.Entities;
+package com.example.eordermanagerapi.DTO;
 
 public class LoginUserDto {
     private String email;

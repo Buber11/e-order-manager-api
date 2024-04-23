@@ -1,7 +1,9 @@
 package com.example.eordermanagerapi.Service;
 
-import com.example.eordermanagerapi.Entities.LoginUserDto;
-import com.example.eordermanagerapi.Entities.RegisterUserDto;
+import com.example.eordermanagerapi.DTO.LoginUserDto;
+import com.example.eordermanagerapi.DTO.Mapper.UserMapper;
+import com.example.eordermanagerapi.DTO.UserDTO.SignUPAnswerDto;
+import com.example.eordermanagerapi.DTO.UserDTO.SignUpDTO;
 import com.example.eordermanagerapi.Entities.User;
 import com.example.eordermanagerapi.JPARespository.JPAUserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +17,8 @@ import java.util.Optional;
 @Service
 public class AuthenticationService {
     private final JPAUserRepository userRepository;
-
+    private final UserMapper userMapper = UserMapper.INSTANCE;
     private final PasswordEncoder passwordEncoder;
-
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationService(
@@ -28,11 +29,6 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    public User signup(RegisterUserDto input) {
-        User user = new User(passwordEncoder.encode(input.getPassword()),"Kam","Płyta",input.getEmail(),"M","A","CLIENT");
-        return userRepository.save(user);
     }
 
     public Optional<User> authenticate(LoginUserDto input) {
@@ -48,5 +44,14 @@ public class AuthenticationService {
             return null;
         }
         return userRepository.findByEmail(input.getEmail());
+    }
+    public SignUPAnswerDto signup(SignUpDTO signUpDTO) {
+
+        User newUser = userMapper.ToUser(signUpDTO);
+        newUser.setPassword(passwordEncoder.encode(signUpDTO.password()));
+        //userRepository.save(newUser);
+        SignUPAnswerDto addedUserDto = userMapper.toUserDto(newUser);
+
+        return addedUserDto;
     }
 }

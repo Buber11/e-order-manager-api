@@ -9,17 +9,21 @@ import java.util.List;
 @Service
 public class UserService {
 
-    JPAUserRepository jpaUserRepository;
+    private final JPAUserRepository userRepository;
 
-    public UserService(JPAUserRepository theJpaUserRepository){
-        this.jpaUserRepository = theJpaUserRepository;
+
+
+    public UserService( JPAUserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public void saveUser(User user){
-        jpaUserRepository.save(user);
+        userRepository.save(user);
     }
     public List<User> getAllUser(){
-        return jpaUserRepository.findAll();
+        return userRepository.findAll();
     }
+
+
 
 }

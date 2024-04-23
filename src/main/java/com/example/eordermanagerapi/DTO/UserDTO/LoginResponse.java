@@ -1,4 +1,4 @@
-package com.example.eordermanagerapi.Entities;
+package com.example.eordermanagerapi.DTO.UserDTO;
 
 public class LoginResponse {
     private String token;
