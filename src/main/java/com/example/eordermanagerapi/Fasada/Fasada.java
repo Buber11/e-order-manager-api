@@ -5,7 +5,7 @@ import com.example.eordermanagerapi.Fasada.commands.CreateNewUserCommand;
 import com.example.eordermanagerapi.Fasada.commands.GetAllUsersCommand;
 import com.example.eordermanagerapi.Entities.User;
 import com.example.eordermanagerapi.Service.AuthenticationService;
-import com.example.eordermanagerapi.Service.UserService;
+import com.example.eordermanagerapi.Service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Fasada {
 
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private final AuthenticationService authenticationService;
 
@@ -35,7 +35,7 @@ public class Fasada {
 
     @Autowired
     @Lazy
-    public void setUserService(UserService userService) {
+    public void setUserService(UserServiceImpl userService) {
         this.userService = userService;
     }
 

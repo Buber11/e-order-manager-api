@@ -9,6 +9,7 @@ import com.example.eordermanagerapi.Fasada.Fasada;
 import com.example.eordermanagerapi.Fasada.commands.CreateNewUserCommand;
 import com.example.eordermanagerapi.Security.JwtService;
 import com.example.eordermanagerapi.Service.AuthenticationService;
+import com.example.eordermanagerapi.Service.AuthenticationServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,7 @@ public class AuthenticationController {
 
     public AuthenticationController(JwtService jwtService,
                                     Fasada fasada,
-                                    AuthenticationService authenticationService) {
+                                    AuthenticationServiceImpl authenticationService) {
         this.jwtService = jwtService;
         this.fasada = fasada;
         this.authenticationService = authenticationService;

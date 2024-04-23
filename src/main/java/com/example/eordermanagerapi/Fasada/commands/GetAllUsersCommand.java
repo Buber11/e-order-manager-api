@@ -3,6 +3,7 @@ package com.example.eordermanagerapi.Fasada.commands;
 import com.example.eordermanagerapi.Entities.User;
 import com.example.eordermanagerapi.Service.UserService;
 
+
 import java.util.List;
 
 /*
@@ -19,6 +20,6 @@ public class GetAllUsersCommand implements Command<List<User>, UserService> {
     }
     @Override
     public List<User> execute(UserService userService) {
-        return userService.getAllUser();
+        return userService.getAllUsers();
     }
 }
