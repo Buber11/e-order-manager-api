@@ -49,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User newUser = userMapper.ToUser(signUpDTO);
         newUser.setPassword(passwordEncoder.encode(signUpDTO.password()));
-        //userRepository.save(newUser);
+        userRepository.save(newUser);
         SignUPAnswerDto addedUserDto = userMapper.toUserDto(newUser);
 
         return addedUserDto;
