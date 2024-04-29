@@ -20,19 +20,17 @@ public class User implements UserDetails {
     private String email;
     private String sex;
     private String status;
-    private String role;
 
     public User() {
     }
 
-    public User(String password, String name, String surname, String email, String sex, String status, String role) {
+    public User(String password, String name, String surname, String email, String sex, String status) {
         this.password = password;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.sex = sex;
         this.status = status;
-        this.role = role;
     }
 
     public long getUserId() {
@@ -85,14 +83,6 @@ public class User implements UserDetails {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     @Override
