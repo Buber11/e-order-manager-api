@@ -34,13 +34,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(e -> e
-                .requestMatchers("/helloworld","/auth/**").permitAll()
-                .anyRequest().authenticated()
+                        .requestMatchers("/hello").authenticated()
+                        .requestMatchers("/helloworld","/auth/**").permitAll()
+                        .anyRequest().authenticated()
 
         );
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                         .authenticationProvider(authenticationProvider)
-                                .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
+                        .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
         httpSecurity.httpBasic(Customizer.withDefaults());
         httpSecurity.cors(cors -> corsConfigurationSource());
 

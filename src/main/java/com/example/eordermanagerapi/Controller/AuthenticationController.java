@@ -36,7 +36,6 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<SignUPAnswerDto> register(@RequestBody SignUpDTO signUpDTO) {
         SignUPAnswerDto createdUserDto = fasada.handle(CreateNewUserCommand.from(signUpDTO));
-        System.out.println(signUpDTO);
         return ResponseEntity.ok(createdUserDto);
     }
     @PostMapping("/login")

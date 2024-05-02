@@ -47,8 +47,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
     public SignUPAnswerDto signup(SignUpDTO signUpDTO) {
 
-        User newUser = userMapper.ToUser(signUpDTO);
-        newUser.setPassword(passwordEncoder.encode(signUpDTO.password()));
+        User newUser = User.builder()
+                .password(passwordEncoder.encode(signUpDTO.password()))
+                .surname(signUpDTO.surname())
+                .name(signUpDTO.name())
+                .email(signUpDTO.email())
+                .build();
+
         userRepository.save(newUser);
         SignUPAnswerDto addedUserDto = userMapper.toUserDto(newUser);
 

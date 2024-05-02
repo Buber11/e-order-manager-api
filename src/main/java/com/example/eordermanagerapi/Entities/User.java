@@ -1,6 +1,9 @@
 package com.example.eordermanagerapi.Entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Builder
+@AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,21 +23,8 @@ public class User implements UserDetails {
     private String name;
     private String surname;
     private String email;
-    private String sex;
-    private String status;
-    private String role;
 
     public User() {
-    }
-
-    public User(String password, String name, String surname, String email, String sex, String status, String role) {
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.sex = sex;
-        this.status = status;
-        this.role = role;
     }
 
     public long getUserId() {
@@ -67,32 +59,8 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public String getSex() {
-        return sex;
-    }
-
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
-
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     @Override
@@ -102,7 +70,6 @@ public class User implements UserDetails {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
-                ", sex='" + sex + '\'' +
                 '}';
     }
 
