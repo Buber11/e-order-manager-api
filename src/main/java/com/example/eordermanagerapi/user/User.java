@@ -1,4 +1,4 @@
-package com.example.eordermanagerapi.Entities;
+package com.example.eordermanagerapi.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,24 +39,27 @@ public class User implements UserDetails {
         return name;
     }
 
-    public void setName(String name) {
+    public User setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
+    public User setSurname(String surname) {
         this.surname = surname;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public void setPassword(String password) {
