@@ -1,4 +1,4 @@
-package com.example.eordermanagerapi.Fasada.commands;
+package com.example.eordermanagerapi.Fasada;
 
 
 public interface Command<T,U> {

@@ -1,6 +1,6 @@
-package com.example.eordermanagerapi.DTO;
+package com.example.eordermanagerapi.payload.request;
 
-public class LoginUserDto {
+public class AuthRequest {
     private String email;
 
     private String password;

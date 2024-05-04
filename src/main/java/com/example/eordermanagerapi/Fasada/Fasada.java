@@ -1,15 +1,19 @@
 package com.example.eordermanagerapi.Fasada;
 
-import com.example.eordermanagerapi.DTO.UserDTO.SignUPAnswerDto;
-import com.example.eordermanagerapi.Fasada.commands.CreateNewUserCommand;
-import com.example.eordermanagerapi.Fasada.commands.GetAllUsersCommand;
-import com.example.eordermanagerapi.Entities.User;
-import com.example.eordermanagerapi.Service.AuthenticationService;
-import com.example.eordermanagerapi.Service.UserServiceImpl;
+
+import com.example.eordermanagerapi.auth.commands.LoginCommand;
+import com.example.eordermanagerapi.auth.commands.SignUpCommand;
+import com.example.eordermanagerapi.payload.response.JwtResponse;
+import com.example.eordermanagerapi.auth.AuthenticationService;
+import com.example.eordermanagerapi.payload.response.UserInfoResponse;
+import com.example.eordermanagerapi.user.UserServiceImpl;
+import com.example.eordermanagerapi.user.command.DeleteUserCommand;
+import com.example.eordermanagerapi.user.command.GetUserCommand;
+import com.example.eordermanagerapi.user.command.UpdateUserCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.util.List;
+import java.util.Optional;
 
 /*
     all services of entities in one place
@@ -25,13 +29,21 @@ public class Fasada {
         authenticationService = theAuthenticationService;
     }
 
-    public List<User> handle(GetAllUsersCommand command){
-        return command.execute(userService);
-    }
-
-    public SignUPAnswerDto handle(CreateNewUserCommand command){
+   public JwtResponse handle(LoginCommand command){
         return command.execute(authenticationService);
-    }
+   }
+   public Optional<UserInfoResponse> handle(SignUpCommand command){
+        return command.execute(authenticationService);
+   }
+   public UserInfoResponse handle(GetUserCommand command){
+        return command.execute(userService);
+   }
+   public Boolean handle(DeleteUserCommand command){
+        return command.execute(userService);
+   }
+   public UserInfoResponse handle(UpdateUserCommand command){
+        return command.execute(userService);
+   }
 
     @Autowired
     @Lazy
