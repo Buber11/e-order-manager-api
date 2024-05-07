@@ -1,6 +1,7 @@
 package com.example.eordermanagerapi.auth;
 
 import com.example.eordermanagerapi.auth.commands.LoginCommand;
+import com.example.eordermanagerapi.auth.commands.RefreshTokenCommand;
 import com.example.eordermanagerapi.auth.commands.SignUpCommand;
 import com.example.eordermanagerapi.auth.commands.ValidateSessionCommand;
 import com.example.eordermanagerapi.payload.request.SignUpRequest;
@@ -36,7 +37,7 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity register(@RequestBody SignUpRequest request) {
         Optional<UserInfoResponse> response = fasada.handle(SignUpCommand.from(request));
-        System.out.println("cos");
+
         if(response.isPresent()){
             return ResponseEntity.ok(response.get());
         }else {
@@ -58,6 +59,16 @@ public class AuthenticationController {
             return ResponseEntity.ok(response);
         }else {
             return ResponseEntity.ok(response);
+        }
+    }
+    @GetMapping("/refresh-token")
+    public ResponseEntity getRefreshedToken(HttpServletRequest request){
+        Long userId = (long) request.getAttribute("id");
+        JwtResponse response = fasada.handle(RefreshTokenCommand.from(userId));
+        if(response != null){
+            return ResponseEntity.ok(response);
+        }else {
+            return ResponseEntity.badRequest().build();
         }
     }
 

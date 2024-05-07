@@ -14,6 +14,7 @@ public interface AuthenticationService {
     Optional<UserInfoResponse> signup(SignUpRequest request);
 
     ValidateSessionResponse getValidateSession(Long userId);
+    JwtResponse refreshToken(Long userId);
 
 
 
