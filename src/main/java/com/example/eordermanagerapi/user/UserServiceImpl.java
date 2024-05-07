@@ -1,7 +1,12 @@
 package com.example.eordermanagerapi.user;
 
+import com.example.eordermanagerapi.Fasada.Fasada;
+import com.example.eordermanagerapi.auth.commands.LoginCommand;
+import com.example.eordermanagerapi.payload.request.AuthRequest;
 import com.example.eordermanagerapi.payload.request.UserChangesRequest;
+import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
+import org.hibernate.query.UnknownParameterException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +17,13 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Fasada fasada;
 
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, Fasada fasada) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.fasada = fasada;
     }
 
     @Override
@@ -46,8 +53,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResponse updateUser(Long userId, UserChangesRequest request) {
+    public JwtResponse updateUser(Long userId, UserChangesRequest request) {
         User updatedUser;
+        AuthRequest authRequest;
 
         if(request.name() == null
                 && request.surname() == null
@@ -62,7 +70,9 @@ public class UserServiceImpl implements UserService {
                     .setEmail(request.email())
                     .setName(request.name())
                     .setSurname(request.surname());
-            userRepository.save(updatedUser);
+
+            authRequest = new AuthRequest(updatedUser.getEmail(),updatedUser.getPassword());
+
         } else {
             updatedUser = User.builder()
                     .userId(userId)
@@ -71,12 +81,11 @@ public class UserServiceImpl implements UserService {
                     .email(request.email())
                     .password(passwordEncoder.encode(request.password()))
                     .build();
-        }
 
-        return UserInfoResponse.builder()
-                .name(updatedUser.getName())
-                .surname(updatedUser.getSurname())
-                .email(updatedUser.getEmail())
-                .build();
+            authRequest = new AuthRequest(updatedUser.getEmail(),updatedUser.getPassword());
+        }
+        userRepository.save(updatedUser);
+        
+        return fasada.handle(LoginCommand.from(authRequest));
     }
 }

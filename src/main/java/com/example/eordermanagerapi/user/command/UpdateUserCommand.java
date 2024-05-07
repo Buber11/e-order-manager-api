@@ -2,11 +2,11 @@ package com.example.eordermanagerapi.user.command;
 
 import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.payload.request.UserChangesRequest;
+import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
-import com.example.eordermanagerapi.user.UserRepository;
 import com.example.eordermanagerapi.user.UserService;
 
-public class UpdateUserCommand implements Command<UserInfoResponse, UserService> {
+public class UpdateUserCommand implements Command<JwtResponse, UserService> {
 
     private final long userId;
     private final UserChangesRequest request;
@@ -20,7 +20,7 @@ public class UpdateUserCommand implements Command<UserInfoResponse, UserService>
     }
 
     @Override
-    public UserInfoResponse execute(UserService userService) {
+    public JwtResponse execute(UserService userService) {
         return userService.updateUser(userId,request);
     }
 }

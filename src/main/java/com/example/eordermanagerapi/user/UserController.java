@@ -2,6 +2,7 @@ package com.example.eordermanagerapi.user;
 
 import com.example.eordermanagerapi.Fasada.Fasada;
 import com.example.eordermanagerapi.payload.request.UserChangesRequest;
+import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.user.command.DeleteUserCommand;
 import com.example.eordermanagerapi.user.command.GetUserCommand;
@@ -47,7 +48,8 @@ public class UserController {
     public ResponseEntity updateUser(HttpServletRequest request,
                                      @RequestBody UserChangesRequest userRequest){
         Long userId = (Long) request.getAttribute("id");
-        UserInfoResponse response = fasada.handle(UpdateUserCommand.from(userId, userRequest));
+        JwtResponse response = fasada.handle(UpdateUserCommand.from(userId, userRequest));
+
         if(response == null){
             return ResponseEntity.ok(request);
         }else {
