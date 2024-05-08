@@ -15,10 +15,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -34,8 +37,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(e -> e
-                        .requestMatchers("/hello").authenticated()
-                        .requestMatchers("/helloworld","/auth/**").permitAll()
+                        .requestMatchers("api/auth/login","api/auth/signup").permitAll()
                         .anyRequest().authenticated()
 
         );

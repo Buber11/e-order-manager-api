@@ -2,10 +2,13 @@ package com.example.eordermanagerapi.Fasada;
 
 
 import com.example.eordermanagerapi.auth.commands.LoginCommand;
+import com.example.eordermanagerapi.auth.commands.RefreshTokenCommand;
 import com.example.eordermanagerapi.auth.commands.SignUpCommand;
-import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.auth.AuthenticationService;
+import com.example.eordermanagerapi.auth.commands.ValidateSessionCommand;
+import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
+import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import com.example.eordermanagerapi.user.UserServiceImpl;
 import com.example.eordermanagerapi.user.command.DeleteUserCommand;
 import com.example.eordermanagerapi.user.command.GetUserCommand;
@@ -41,8 +44,15 @@ public class Fasada {
    public Boolean handle(DeleteUserCommand command){
         return command.execute(userService);
    }
-   public UserInfoResponse handle(UpdateUserCommand command){
+   public JwtResponse handle(UpdateUserCommand command){
         return command.execute(userService);
+   }
+
+   public ValidateSessionResponse handle(ValidateSessionCommand command){
+        return command.execute(authenticationService);
+   }
+   public JwtResponse handle(RefreshTokenCommand command){
+        return command.execute(authenticationService);
    }
 
     @Autowired
