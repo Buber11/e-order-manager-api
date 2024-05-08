@@ -1,12 +1,14 @@
 package com.example.eordermanagerapi.auth;
 
 import com.example.eordermanagerapi.Security.JwtService;
+
 import com.example.eordermanagerapi.payload.request.AuthRequest;
 
 import com.example.eordermanagerapi.payload.request.SignUpRequest;
-import com.example.eordermanagerapi.payload.response.JwtResponse;
 
+import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
+import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import com.example.eordermanagerapi.user.User;
 import com.example.eordermanagerapi.user.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,19 +28,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+
     public AuthenticationServiceImpl(UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+
     }
 
     public JwtResponse authenticate(AuthRequest input) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            input.getEmail(),
-                            input.getPassword()
+                            input.email(),
+                            input.password()
                     )
             );
         } catch (AuthenticationException e) {
@@ -46,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return null;
         }
 
-        Optional<User> userOpt = userRepository.findByEmail(input.getEmail());
+        Optional<User> userOpt = userRepository.findByEmail(input.email());
         HashMap claims = new HashMap();
         claims.put("id",userOpt.get().getUserId());
 
@@ -80,6 +84,43 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     }
+
+    @Override
+    public ValidateSessionResponse getValidateSession(Long userId) {
+        if(userRepository.existsById(userId)){
+            return new ValidateSessionResponse(true);
+        }else {
+            return new ValidateSessionResponse(false);
+        }
+    }
+
+    @Override
+    public JwtResponse refreshToken(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if(userOpt.isPresent()){
+            HashMap claims = new HashMap();
+            claims.put("id",userId);
+
+            String jwtToken = jwtService.generateToken(claims,userOpt.get());
+            return JwtResponse.builder()
+                    .token(jwtToken)
+                    .expiresIn(jwtService.getExpirationTime())
+                    .build();
+        }else {
+            return null;
+        }
+    }
+
+//    @Override
+//    public void logout(Long userId) {
+//        if(userRepository.existsById(userId)){
+//            tokenRepository.save(
+//                    Token.builder()
+//                            .userId(userId)
+//                            .
+//            )
+//        }
+//    }
 
 
 }

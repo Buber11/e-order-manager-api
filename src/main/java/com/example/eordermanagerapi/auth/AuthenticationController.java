@@ -55,6 +55,7 @@ public class AuthenticationController {
     public ResponseEntity getValidateSestion(HttpServletRequest request){
         Long userId = (long) request.getAttribute("id");
         ValidateSessionResponse response = fasada.handle(ValidateSessionCommand.from(userId));
+
         if(response.validation()){
             return ResponseEntity.ok(response);
         }else {
@@ -65,11 +66,17 @@ public class AuthenticationController {
     public ResponseEntity getRefreshedToken(HttpServletRequest request){
         Long userId = (long) request.getAttribute("id");
         JwtResponse response = fasada.handle(RefreshTokenCommand.from(userId));
+
         if(response != null){
             return ResponseEntity.ok(response);
         }else {
             return ResponseEntity.badRequest().build();
         }
     }
+//    @GetMapping("/logout")
+//    public ResponseEntity logout(HttpServletRequest request){
+//        Long userId = (long) request.getAttribute("id");
+//
+//    }
 
 }

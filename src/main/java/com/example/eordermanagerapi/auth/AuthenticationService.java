@@ -16,6 +16,8 @@ public interface AuthenticationService {
     ValidateSessionResponse getValidateSession(Long userId);
     JwtResponse refreshToken(Long userId);
 
+//    void logout(Long userId);
+
 
 
 }
