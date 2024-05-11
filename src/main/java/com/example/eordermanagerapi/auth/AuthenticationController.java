@@ -11,11 +11,14 @@ import com.example.eordermanagerapi.Security.JwtService;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.HttpCookie;
 import java.util.Optional;
 
 @RequestMapping("api/auth")
@@ -46,9 +49,18 @@ public class AuthenticationController {
 
     }
     @PostMapping("/login")
-    public ResponseEntity authenticate(@RequestBody AuthRequest request) {
+    public ResponseEntity authenticate(@RequestBody AuthRequest request, HttpServletResponse responsehttp) {
+
         JwtResponse response = fasada.handle(LoginCommand.from(request));
-        return ResponseEntity.ok(response);
+
+        Cookie cookie = new Cookie("jwt_token", response.token());
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setMaxAge(5*3600);
+        responsehttp.addCookie(cookie);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/validate-session")
@@ -63,9 +75,13 @@ public class AuthenticationController {
         }
     }
     @GetMapping("/refresh-token")
-    public ResponseEntity getRefreshedToken(HttpServletRequest request){
+    public ResponseEntity getRefreshedToken(HttpServletRequest request, HttpServletResponse responsehttp){
         Long userId = (long) request.getAttribute("id");
         JwtResponse response = fasada.handle(RefreshTokenCommand.from(userId));
+        
+        Cookie cookie = new Cookie("jwt_token", response.token());
+        cookie.setHttpOnly(true);
+        responsehttp.addCookie(cookie);
 
         if(response != null){
             return ResponseEntity.ok(response);
