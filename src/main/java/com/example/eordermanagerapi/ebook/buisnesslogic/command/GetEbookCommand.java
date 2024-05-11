@@ -1,12 +1,10 @@
 package com.example.eordermanagerapi.ebook.buisnesslogic.command;
 
 import com.example.eordermanagerapi.Fasada.Command;
-import com.example.eordermanagerapi.ebook.EbookRepository;
+import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
-import com.example.eordermanagerapi.payload.response.EbookResposne;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 
-public class GetEbookCommand implements Command<EbookResposne, EbookService> {
+public class GetEbookCommand implements Command<EbookDTOView, EbookService> {
 
     private final long ebookId;
 
@@ -19,7 +17,7 @@ public class GetEbookCommand implements Command<EbookResposne, EbookService> {
     }
 
     @Override
-    public EbookResposne execute(EbookService ebookService) {
+    public EbookDTOView execute(EbookService ebookService) {
         return ebookService.getEbook(ebookId);
     }
 }

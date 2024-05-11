@@ -1,14 +1,8 @@
 package com.example.eordermanagerapi.payload.response;
 
-import jakarta.persistence.Column;
-import lombok.Builder;
+import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 
-@Builder
 public record EbookResposne(
-        String imagineUrl,
-        String title,
-        String author,
-        Long rating,
-        String tag
+        EbookDTOView ebookDTOView
 ) {
 }

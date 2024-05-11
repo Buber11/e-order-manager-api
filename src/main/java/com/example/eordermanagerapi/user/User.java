@@ -1,5 +1,6 @@
 package com.example.eordermanagerapi.user;
 
+import com.example.eordermanagerapi.Address.Address;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

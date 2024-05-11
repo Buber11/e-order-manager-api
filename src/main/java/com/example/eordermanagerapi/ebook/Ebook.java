@@ -1,7 +1,10 @@
 package com.example.eordermanagerapi.ebook;
 
+import com.example.eordermanagerapi.Author.Author;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Builder
@@ -14,11 +17,18 @@ public class Ebook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ebook")
     private Long ebookId;
+
     @Column(name = "image_url")
     private String imagineUrl;
+
     private String title;
-    private String author;
+
     private Long rating;
+
     private String tag;
+
+    @ManyToMany(mappedBy = "ebooks")
+    private List<Author> authors;
+
 
 }

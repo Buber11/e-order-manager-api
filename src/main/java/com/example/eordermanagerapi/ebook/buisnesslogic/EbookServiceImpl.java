@@ -1,15 +1,17 @@
 package com.example.eordermanagerapi.ebook.buisnesslogic;
 
+import com.example.eordermanagerapi.Author.DTO.AuthorDTOForEbook;
+import com.example.eordermanagerapi.Author.DTO.AuthorDTOView;
 import com.example.eordermanagerapi.ebook.Ebook;
+import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.EbookRepository;
-import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
-import com.example.eordermanagerapi.payload.response.EbookResposne;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EbookServiceImpl implements EbookService {
@@ -26,16 +28,28 @@ public class EbookServiceImpl implements EbookService {
     }
 
     @Override
-    public EbookResposne getEbook(long ebookId) {
+    public EbookDTOView getEbook(long ebookId) {
         Optional<Ebook> ebookOpt = ebookRepository.findById(ebookId);
         if(ebookOpt.isPresent()){
             Ebook ebook = ebookOpt.get();
-            return EbookResposne.builder()
-                    .title(ebook.getTitle())
+            return EbookDTOView.builder()
                     .tag(ebook.getTag())
-                    .author(ebook.getAuthor())
                     .imagineUrl(ebook.getImagineUrl())
+                    .title(ebook.getTitle())
+                    .ebookId(ebook.getEbookId())
                     .rating(ebook.getRating())
+                    .authors( ebook.getAuthors().stream()
+                            .map(author -> {
+                               return AuthorDTOForEbook.builder()
+                                        .email(author.getUser().getEmail())
+                                        .name(author.getUser().getName())
+                                        .authorId(author.getAuthorId())
+                                        .surname(author.getUser().getSurname())
+                                        .signUpDate(author.getSignUpDate())
+                                        .build();
+                            } )
+                            .collect(Collectors.toList())
+                    )
                     .build();
         }else {
             return null;
@@ -46,6 +60,6 @@ public class EbookServiceImpl implements EbookService {
     @Override
     public boolean addEbook(EbookRequest request, HttpServletRequest httpServletRequest) {
         long userId = (long) httpServletRequest.getAttribute("id");
-
+        return true;
     }
 }

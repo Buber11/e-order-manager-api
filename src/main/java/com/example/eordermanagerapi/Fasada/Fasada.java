@@ -7,10 +7,10 @@ import com.example.eordermanagerapi.auth.commands.SignUpCommand;
 import com.example.eordermanagerapi.auth.AuthenticationService;
 import com.example.eordermanagerapi.auth.commands.ValidateSessionCommand;
 import com.example.eordermanagerapi.ebook.Ebook;
+import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
-import com.example.eordermanagerapi.payload.response.EbookResposne;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
@@ -65,7 +65,7 @@ public class Fasada {
    public List<Ebook> handle(GetAllEbooksCommand command){
         return command.execute(ebookService);
    }
-   public EbookResposne handle(GetEbookCommand command){
+   public EbookDTOView handle(GetEbookCommand command){
         return command.execute(ebookService);
    }
 

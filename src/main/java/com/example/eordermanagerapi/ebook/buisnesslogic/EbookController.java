@@ -2,10 +2,10 @@ package com.example.eordermanagerapi.ebook.buisnesslogic;
 
 import com.example.eordermanagerapi.Fasada.Fasada;
 import com.example.eordermanagerapi.ebook.Ebook;
+import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
-import com.example.eordermanagerapi.payload.response.EbookResposne;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +30,7 @@ public class EbookController {
 
     @GetMapping("/get")
     public ResponseEntity getEbook(@RequestParam Long ebookId){
-        EbookResposne resposne = fasada.handle(GetEbookCommand.from(ebookId));
+        EbookDTOView resposne = fasada.handle(GetEbookCommand.from(ebookId));
         if(resposne != null){
             return ResponseEntity.ok(resposne);
         }else {
@@ -40,7 +40,7 @@ public class EbookController {
 
     @PutMapping("/add")
     public ResponseEntity addEbook(@RequestBody EbookRequest request, HttpServletRequest httpServletRequest){
-
+        return null;
     }
 
 }
