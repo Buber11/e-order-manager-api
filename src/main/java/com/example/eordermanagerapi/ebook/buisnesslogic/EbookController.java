@@ -42,7 +42,7 @@ public class EbookController {
 
     @GetMapping("/getAll")
     public ResponseEntity getAllEbooks(){
-        
+
         List<EbookDTOView> ebooks = fasada.handle(GetAllEbooksCommand.from());
         return ResponseEntity.ok(ebooks);
     }

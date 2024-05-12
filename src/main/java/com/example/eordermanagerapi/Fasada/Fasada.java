@@ -1,6 +1,10 @@
 package com.example.eordermanagerapi.Fasada;
 
 
+import com.example.eordermanagerapi.Author.DTO.AuthorDTOView;
+import com.example.eordermanagerapi.Author.businsessLogic.AuthorService;
+import com.example.eordermanagerapi.Author.businsessLogic.Command.GetAllAuthorsCommand;
+import com.example.eordermanagerapi.Author.businsessLogic.Command.GetAuthorCommand;
 import com.example.eordermanagerapi.auth.commands.*;
 import com.example.eordermanagerapi.auth.AuthenticationService;
 import com.example.eordermanagerapi.ebook.Ebook;
@@ -33,6 +37,7 @@ public class Fasada {
 
     private final AuthenticationService authenticationService;
     private EbookService ebookService;
+    private AuthorService authorService;
 
     public Fasada(AuthenticationService theAuthenticationService) {
         authenticationService = theAuthenticationService;
@@ -76,6 +81,12 @@ public class Fasada {
    public List<EbookDTOView> handle(GetEbooksAlphabeticalCommand command){
         return command.execute(ebookService);
    }
+   public List<AuthorDTOView> handle(GetAllAuthorsCommand command){
+        return command.execute(authorService);
+   }
+   public AuthorDTOView handle(GetAuthorCommand command){
+        return command.execute(authorService);
+   }
 
 
     @Autowired
@@ -87,6 +98,11 @@ public class Fasada {
     @Lazy
     public void setEbookService(EbookService ebookService) {
         this.ebookService = ebookService;
+    }
+    @Autowired
+    @Lazy
+    public void setEbookService(AuthorService authorService) {
+        this.authorService = authorService;
     }
 
 }
