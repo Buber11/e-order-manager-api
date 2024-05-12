@@ -6,6 +6,7 @@ import com.example.eordermanagerapi.payload.request.AuthRequest;
 import com.example.eordermanagerapi.payload.request.UserChangesRequest;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.query.UnknownParameterException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -87,5 +88,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(updatedUser);
         
         return fasada.handle(LoginCommand.from(authRequest));
+    }
+
+    @Override
+    public boolean existsAsAuthor(HttpServletRequest httpServletRequest) {
+        long userId = (long) httpServletRequest.getAttribute("id");
+        return userRepository.existsAsAuthor(userId);
     }
 }

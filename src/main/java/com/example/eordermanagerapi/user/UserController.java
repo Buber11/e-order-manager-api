@@ -5,6 +5,7 @@ import com.example.eordermanagerapi.payload.request.UserChangesRequest;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.user.command.DeleteUserCommand;
+import com.example.eordermanagerapi.user.command.ExistsAsAuthorCommand;
 import com.example.eordermanagerapi.user.command.GetUserCommand;
 import com.example.eordermanagerapi.user.command.UpdateUserCommand;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,6 +55,15 @@ public class UserController {
             return ResponseEntity.ok(request);
         }else {
             return ResponseEntity.badRequest().build();
+        }
+    }
+    @GetMapping("/exists-as-author")
+    public ResponseEntity existsAsAuthor(HttpServletRequest httpServletRequest){
+        var existsAsAuthor = fasada.handle(ExistsAsAuthorCommand.from(httpServletRequest));
+        if(existsAsAuthor){
+            return ResponseEntity.ok().build();
+        }else {
+            return ResponseEntity.noContent().build();
         }
     }
 }

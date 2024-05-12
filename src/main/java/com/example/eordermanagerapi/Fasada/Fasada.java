@@ -19,6 +19,7 @@ import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import com.example.eordermanagerapi.user.UserServiceImpl;
 import com.example.eordermanagerapi.user.command.DeleteUserCommand;
+import com.example.eordermanagerapi.user.command.ExistsAsAuthorCommand;
 import com.example.eordermanagerapi.user.command.GetUserCommand;
 import com.example.eordermanagerapi.user.command.UpdateUserCommand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,9 @@ public class Fasada {
    public JwtResponse handle(UpdateUserCommand command){
         return command.execute(userService);
    }
-
+   public boolean handle(ExistsAsAuthorCommand command){
+        return command.execute(userService);
+   }
    public ValidateSessionResponse handle(ValidateSessionCommand command){
         return command.execute(authenticationService);
    }
