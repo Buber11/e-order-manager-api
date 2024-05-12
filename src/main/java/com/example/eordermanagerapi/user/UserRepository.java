@@ -11,7 +11,8 @@ public interface UserRepository extends JpaRepository<User,Long> {
     public Optional<User> findByEmail(String email);
     Boolean existsByEmail(String email);
 
-    @Query("SELECT EXISTS (SELECT 1 FROM authors WHERE user_id = ?1 )")
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Author a WHERE a.user.userId = ?1")
     boolean existsAsAuthor(long userId);
+
 
 }
