@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public class EbookDTOView {
     private Long ebookId;
-    private String imagineUrl;
+    private String image;
     private String title;
     private Long rating;
     private String tag;

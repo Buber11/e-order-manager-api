@@ -2,6 +2,8 @@ package com.example.eordermanagerapi.auth;
 
 import com.example.eordermanagerapi.Security.JwtService;
 
+import com.example.eordermanagerapi.auth.token.Token;
+import com.example.eordermanagerapi.auth.token.TokenRepository;
 import com.example.eordermanagerapi.payload.request.AuthRequest;
 
 import com.example.eordermanagerapi.payload.request.SignUpRequest;
@@ -11,6 +13,7 @@ import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import com.example.eordermanagerapi.user.User;
 import com.example.eordermanagerapi.user.UserRepository;
+import jakarta.servlet.http.Cookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -23,18 +26,23 @@ import java.util.Optional;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
     private final JwtService jwtService;
 
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
 
-    public AuthenticationServiceImpl(UserRepository userRepository, JwtService jwtService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthenticationServiceImpl(UserRepository userRepository,
+                                     TokenRepository tokenRepository,
+                                     JwtService jwtService,
+                                     PasswordEncoder passwordEncoder,
+                                     AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
         this.jwtService = jwtService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-
     }
 
     public JwtResponse authenticate(AuthRequest input) {
@@ -111,16 +119,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-//    @Override
-//    public void logout(Long userId) {
-//        if(userRepository.existsById(userId)){
-//            tokenRepository.save(
-//                    Token.builder()
-//                            .userId(userId)
-//                            .
-//            )
-//        }
-//    }
+    @Override
+    public void logout(Cookie cookie) {
+        String tokenStr = cookie.getValue();
+        System.out.println(tokenStr);
+        Token token = Token.builder()
+                        .token(tokenStr)
+                        .build();
+        tokenRepository.save(token);
+    }
 
 
 }

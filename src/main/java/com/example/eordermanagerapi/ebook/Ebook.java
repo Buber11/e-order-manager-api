@@ -17,9 +17,8 @@ public class Ebook {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ebook")
     private Long ebookId;
-
-    @Column(name = "image_url")
-    private String imagineUrl;
+    
+    private String image;
 
     private String title;
 

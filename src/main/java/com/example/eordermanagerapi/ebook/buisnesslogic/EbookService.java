@@ -9,8 +9,10 @@ import java.util.List;
 
 public interface EbookService {
 
-    List<Ebook> getAllBooks();
+    List<EbookDTOView> getAllBooks();
     EbookDTOView getEbook(long ebookId);
+    List<EbookDTOView> getTheMostPopular(int amount);
+    List<EbookDTOView> getEbooksAlphabetical();
 
     boolean addEbook(EbookRequest request, HttpServletRequest httpServletRequest);
 

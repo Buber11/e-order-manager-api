@@ -1,16 +1,15 @@
 package com.example.eordermanagerapi.Fasada;
 
 
-import com.example.eordermanagerapi.auth.commands.LoginCommand;
-import com.example.eordermanagerapi.auth.commands.RefreshTokenCommand;
-import com.example.eordermanagerapi.auth.commands.SignUpCommand;
+import com.example.eordermanagerapi.auth.commands.*;
 import com.example.eordermanagerapi.auth.AuthenticationService;
-import com.example.eordermanagerapi.auth.commands.ValidateSessionCommand;
 import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
+import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbooksAlphabeticalCommand;
+import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetTheMostPopularEbookCommand;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
@@ -62,12 +61,22 @@ public class Fasada {
         return command.execute(authenticationService);
    }
 
-   public List<Ebook> handle(GetAllEbooksCommand command){
+   public List<EbookDTOView> handle(GetAllEbooksCommand command){
         return command.execute(ebookService);
    }
    public EbookDTOView handle(GetEbookCommand command){
         return command.execute(ebookService);
    }
+   public void handle(LogoutCommand command) {
+        command.execute(authenticationService);
+    }
+   public List<EbookDTOView> handle(GetTheMostPopularEbookCommand command){
+        return command.execute(ebookService);
+   }
+   public List<EbookDTOView> handle(GetEbooksAlphabeticalCommand command){
+        return command.execute(ebookService);
+   }
+
 
     @Autowired
     @Lazy

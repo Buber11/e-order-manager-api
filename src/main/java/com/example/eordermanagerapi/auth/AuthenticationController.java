@@ -1,9 +1,6 @@
 package com.example.eordermanagerapi.auth;
 
-import com.example.eordermanagerapi.auth.commands.LoginCommand;
-import com.example.eordermanagerapi.auth.commands.RefreshTokenCommand;
-import com.example.eordermanagerapi.auth.commands.SignUpCommand;
-import com.example.eordermanagerapi.auth.commands.ValidateSessionCommand;
+import com.example.eordermanagerapi.auth.commands.*;
 import com.example.eordermanagerapi.payload.request.SignUpRequest;
 import com.example.eordermanagerapi.payload.request.AuthRequest;
 import com.example.eordermanagerapi.Fasada.Fasada;
@@ -89,10 +86,13 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().build();
         }
     }
-//    @GetMapping("/logout")
-//    public ResponseEntity logout(HttpServletRequest request){
-//        Long userId = (long) request.getAttribute("id");
-//
-//    }
+
+    @GetMapping("/logout")
+    public ResponseEntity logout(@CookieValue(name = "jwt_token")String token){
+        System.out.println("weszło");
+        //fasada.handle(LogoutCommand.from(cookie));
+        System.out.println("udało się");
+        return ResponseEntity.ok().build();
+    }
 
 }

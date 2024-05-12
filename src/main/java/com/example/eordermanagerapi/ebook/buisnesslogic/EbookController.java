@@ -5,6 +5,8 @@ import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
+import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbooksAlphabeticalCommand;
+import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetTheMostPopularEbookCommand;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,26 @@ public class EbookController {
         this.fasada = fasada;
     }
 
+    @GetMapping("/get-the-most-popular")
+    public ResponseEntity getTheMostPopular(@RequestParam(name ="amount")int amount){
+        if(amount >= 0){
+            List<EbookDTOView> ebooks = fasada.handle(GetTheMostPopularEbookCommand.from(amount));
+            return ResponseEntity.ok(ebooks);
+        }else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/get-alphabetical")
+    public ResponseEntity getAlphabetical(){
+        List<EbookDTOView> ebooks = fasada.handle(GetEbooksAlphabeticalCommand.from());
+        return ResponseEntity.ok(ebooks);
+    }
+
     @GetMapping("/getAll")
     public ResponseEntity getAllEbooks(){
-        List<Ebook> ebooks = fasada.handle(GetAllEbooksCommand.from());
+        
+        List<EbookDTOView> ebooks = fasada.handle(GetAllEbooksCommand.from());
         return ResponseEntity.ok(ebooks);
     }
 
@@ -38,9 +57,9 @@ public class EbookController {
         }
     }
 
-    @PutMapping("/add")
-    public ResponseEntity addEbook(@RequestBody EbookRequest request, HttpServletRequest httpServletRequest){
-        return null;
-    }
+//    @PutMapping("/add")
+//    public ResponseEntity addEbook(@RequestBody EbookRequest request, HttpServletRequest httpServletRequest){
+//        return null;
+//    }
 
 }
