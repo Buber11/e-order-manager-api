@@ -28,6 +28,7 @@ public class Order {
     private Double price;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     public long getOrderId() {
