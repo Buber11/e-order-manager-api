@@ -15,6 +15,7 @@ import java.util.List;
 @Table(name = "users")
 @Builder
 @AllArgsConstructor
+
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +25,14 @@ public class User implements UserDetails {
     private String name;
     private String surname;
     private String email;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_address",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id")
+    )
+    private List<Address> addresses;
 
     public User() {
     }

@@ -1,9 +1,11 @@
 package com.example.eordermanagerapi.Address;
 
+import com.example.eordermanagerapi.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import javax.naming.ldap.PagedResultsControl;
+import java.util.List;
 
 @Entity
 @Builder
@@ -24,4 +26,6 @@ public class Address {
     @Column(name = "post_code")
     private String postCode;
 
+    @ManyToMany(mappedBy = "addresses")
+    private List<User> users;
 }
