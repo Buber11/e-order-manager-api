@@ -3,7 +3,6 @@ package com.example.eordermanagerapi.user.command;
 import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.payload.request.UserChangesRequest;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
-import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.user.UserService;
 
 public class UpdateUserCommand implements Command<JwtResponse, UserService> {

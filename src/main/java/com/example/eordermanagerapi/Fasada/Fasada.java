@@ -7,13 +7,16 @@ import com.example.eordermanagerapi.Author.businsessLogic.Command.GetAllAuthorsC
 import com.example.eordermanagerapi.Author.businsessLogic.Command.GetAuthorCommand;
 import com.example.eordermanagerapi.auth.commands.*;
 import com.example.eordermanagerapi.auth.AuthenticationService;
-import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbooksAlphabeticalCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetTheMostPopularEbookCommand;
+import com.example.eordermanagerapi.order.Command.GetClientOrdersCommand;
+import com.example.eordermanagerapi.order.DTO.OrderDtoView;
+import com.example.eordermanagerapi.order.Order;
+import com.example.eordermanagerapi.order.OrderService;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
@@ -35,6 +38,7 @@ import java.util.Optional;
 public class Fasada {
 
     private UserServiceImpl userService;
+    private OrderService orderService;
 
     private final AuthenticationService authenticationService;
     private EbookService ebookService;
@@ -87,6 +91,9 @@ public class Fasada {
    public List<AuthorDTOView> handle(GetAllAuthorsCommand command){
         return command.execute(authorService);
    }
+    public List<OrderDtoView> handle(GetClientOrdersCommand command){
+        return command.execute(orderService);
+    }
    public AuthorDTOView handle(GetAuthorCommand command){
         return command.execute(authorService);
    }
