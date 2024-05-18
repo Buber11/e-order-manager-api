@@ -1,5 +1,6 @@
 package com.example.eordermanagerapi.Payments;
 
+import com.example.eordermanagerapi.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,8 +8,7 @@ import java.util.Date;
 
 @Entity
 @Builder
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Payment {
@@ -16,11 +16,21 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_payment")
     long paymentId;
-    @Column(name = "order_id")
-    int orderId;
+
+    @OneToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id_order")
+    private Order order;
+
     @Column(name = "payment_date")
-    Date paymentDate;
+    private Date paymentDate;
 
-    String status;
+    @Column(name = "status")
+    private PaymentStatus paymentStatus;
 
+}
+enum PaymentStatus {
+    PENDING,
+    COMPLETED,
+    CANCELED,
+    REFUNDEN
 }
