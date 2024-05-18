@@ -10,6 +10,7 @@ import com.example.eordermanagerapi.auth.AuthenticationService;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.*;
+import com.example.eordermanagerapi.order.businessLogic.Command.AddOrderCommand;
 import com.example.eordermanagerapi.order.businessLogic.Command.GetClientOrdersCommand;
 import com.example.eordermanagerapi.order.DTO.OrderDtoView;
 import com.example.eordermanagerapi.order.businessLogic.OrderService;
@@ -95,6 +96,7 @@ public class Fasada {
         return command.execute(authorService);
    }
    public ModelAndView handle(AddEbookCommnad commnad){return commnad.execute(ebookService);}
+    public ModelAndView handle(AddOrderCommand command){return command.execute(orderService);}
 
 
     @Autowired

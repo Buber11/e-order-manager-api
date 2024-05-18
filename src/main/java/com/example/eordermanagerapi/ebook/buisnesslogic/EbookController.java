@@ -65,7 +65,6 @@ public class EbookController {
     public ResponseEntity addEbook(@Valid @RequestBody EbookRequest request,
                                    BindingResult bindingResult
     ){
-        System.out.println(request);
         if (bindingResult.hasErrors()) {
 
             Map<String, String> errorsMap = new HashMap<>();

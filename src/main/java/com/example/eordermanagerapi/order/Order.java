@@ -3,6 +3,7 @@ package com.example.eordermanagerapi.order;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Data
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +22,7 @@ public class Order {
     private Long clientId;
 
     @Column(name = "purchase_date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     private Date purchaseDate;
 
     @Column(name = "price")
@@ -30,45 +32,5 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    public long getOrderId() {
-        return orderId;
-    }
 
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
-    }
-
-    public Date getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    //manytoOneClien zamiast clientID
 }

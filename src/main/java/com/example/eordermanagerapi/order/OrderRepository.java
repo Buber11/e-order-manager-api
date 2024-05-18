@@ -11,4 +11,6 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     //@Query("select o FROM Order o WHERE o.clientId")
     List<Order> findAllByClientId(long id);
+
+
 }

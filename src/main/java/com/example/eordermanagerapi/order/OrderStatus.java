@@ -2,6 +2,6 @@ package com.example.eordermanagerapi.order;
 
 public enum OrderStatus {
     UNREALIZED,
-    INPROGRESS,
+    IN_PROGRESS,
     REALIZED
 }

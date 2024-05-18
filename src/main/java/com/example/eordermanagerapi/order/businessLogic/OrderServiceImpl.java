@@ -1,11 +1,15 @@
 package com.example.eordermanagerapi.order.businessLogic;
 
+import com.example.eordermanagerapi.Client.ClientRepository;
+import com.example.eordermanagerapi.order.*;
 import com.example.eordermanagerapi.order.DTO.OrderDtoView;
-import com.example.eordermanagerapi.order.Order;
-import com.example.eordermanagerapi.order.OrderNeo4jRepository;
-import com.example.eordermanagerapi.order.OrderRepository;
-import com.example.eordermanagerapi.order.businessLogic.OrderService;
+import com.example.eordermanagerapi.payload.request.OrderRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,15 +20,56 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderNeo4jRepository orderNeo4jRepository;
+    private final ClientRepository clientRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, OrderNeo4jRepository orderNeo4jRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository,
+                            OrderNeo4jRepository orderNeo4jRepository,
+                            ClientRepository clientRepository) {
         this.orderRepository = orderRepository;
         this.orderNeo4jRepository = orderNeo4jRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
-    public Order saveOrder(Order order) {
-        return orderRepository.save(order);
+    public ModelAndView addOrder(OrderRequest request, HttpServletRequest httpServletRequest) {
+        ModelAndView modelAndView = new ModelAndView();
+        long userId = (long) httpServletRequest.getAttribute("id");
+        System.out.println(userId);
+        long clientId = clientRepository.getClinetIdByUserId(userId);
+        System.out.println(clientId);
+
+        Order order = Order.builder()
+                .status(OrderStatus.IN_PROGRESS)
+                .price(request.price())
+                .clientId(clientId)
+                .build();
+        try {
+            Order createdOrder = orderRepository.save(order);
+            long orderId = createdOrder.getOrderId();
+            System.out.println(orderId);
+
+            if (orderId > 0) {
+                OrderNeo4j orderNeo4j = OrderNeo4j.builder()
+                        .orderId(orderId)
+                        .status(OrderStatus.IN_PROGRESS.name())
+                        .price(request.price())
+                        .clientId(clientId)
+                        .build();
+
+                orderNeo4jRepository.save(orderNeo4j);
+                System.out.println("Order and OrderNeo4j saved successfully with orderId: " + orderId);
+            } else {
+                System.err.println("Failed to save Order.");
+                modelAndView.setStatus(HttpStatus.BAD_REQUEST);
+                modelAndView.addObject("error","Failed to save Order.");
+            }
+        } catch (DataAccessException e) {
+            System.err.println("Error occurred while saving Order: " + e.getMessage());
+            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
+            modelAndView.addObject("error","Error occurred while saving Order: " + e.getMessage());
+        }
+        modelAndView.setStatus(HttpStatusCode.valueOf(200));
+        return modelAndView;
     }
 
     @Override
