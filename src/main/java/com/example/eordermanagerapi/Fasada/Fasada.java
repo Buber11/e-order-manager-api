@@ -114,5 +114,11 @@ public class Fasada {
     public void setEbookService(AuthorService authorService) {
         this.authorService = authorService;
     }
+    @Autowired
+    @Lazy
+    public void setEbookService(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
 
 }

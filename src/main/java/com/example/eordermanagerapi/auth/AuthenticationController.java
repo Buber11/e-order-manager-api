@@ -47,7 +47,7 @@ public class AuthenticationController {
     }
     @PostMapping("/login")
     public ResponseEntity authenticate(@RequestBody AuthRequest request, HttpServletResponse responsehttp) {
-
+        System.out.println("weszło");
         JwtResponse response = fasada.handle(LoginCommand.from(request));
 
         Cookie cookie = new Cookie("jwt_token", response.token());

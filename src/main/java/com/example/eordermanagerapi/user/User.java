@@ -1,6 +1,7 @@
 package com.example.eordermanagerapi.user;
 
 import com.example.eordermanagerapi.Address.Address;
+import com.example.eordermanagerapi.Client.Client;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,9 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "address_id")
     )
     private List<Address> addresses;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Client client;
 
     public User() {
     }

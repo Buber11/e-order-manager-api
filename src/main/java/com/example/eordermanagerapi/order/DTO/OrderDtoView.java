@@ -16,7 +16,6 @@ import java.util.Date;
 @Getter
 public class OrderDtoView {
     private long orderId;
-    
     private Date purchaseDate;
     private Double price;
     private OrderStatus status;
