@@ -1,4 +1,4 @@
-package com.example.eordermanagerapi.order.Enum;
+package com.example.eordermanagerapi.order;
 
 public enum OrderStatus {
     UNREALIZED,

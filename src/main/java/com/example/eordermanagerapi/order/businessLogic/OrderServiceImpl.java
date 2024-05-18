@@ -1,7 +1,10 @@
-package com.example.eordermanagerapi.order;
+package com.example.eordermanagerapi.order.businessLogic;
 
 import com.example.eordermanagerapi.order.DTO.OrderDtoView;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.eordermanagerapi.order.Order;
+import com.example.eordermanagerapi.order.OrderNeo4jRepository;
+import com.example.eordermanagerapi.order.OrderRepository;
+import com.example.eordermanagerapi.order.businessLogic.OrderService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +15,11 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final OrderNeo4jRepository orderNeo4jRepository;
 
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderNeo4jRepository orderNeo4jRepository) {
         this.orderRepository = orderRepository;
+        this.orderNeo4jRepository = orderNeo4jRepository;
     }
 
     @Override
@@ -35,12 +39,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteOrder(Long id) {
+
         orderRepository.deleteById(id);
     }
 
     @Override
-    public List<OrderDtoView> getClientOrders(long clientId){
+    public List getClientOrders(long clientId){
         List<Order> allByClientId = orderRepository.findAllByClientId(clientId);
+
         return allByClientId.stream()
                 .map(order -> OrderDtoView.builder()
                         .orderId(order.getOrderId())

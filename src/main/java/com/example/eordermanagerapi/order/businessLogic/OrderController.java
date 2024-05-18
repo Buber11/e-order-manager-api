@@ -1,7 +1,7 @@
-package com.example.eordermanagerapi.order;
+package com.example.eordermanagerapi.order.businessLogic;
 
 import com.example.eordermanagerapi.Fasada.Fasada;
-import com.example.eordermanagerapi.order.Command.GetClientOrdersCommand;
+import com.example.eordermanagerapi.order.businessLogic.Command.GetClientOrdersCommand;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

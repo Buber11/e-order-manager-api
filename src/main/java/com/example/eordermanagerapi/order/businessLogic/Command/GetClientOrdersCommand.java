@@ -1,9 +1,8 @@
-package com.example.eordermanagerapi.order.Command;
+package com.example.eordermanagerapi.order.businessLogic.Command;
 
 import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.order.DTO.OrderDtoView;
-import com.example.eordermanagerapi.order.Order;
-import com.example.eordermanagerapi.order.OrderService;
+import com.example.eordermanagerapi.order.businessLogic.OrderService;
 
 import java.util.List;
 //zmien order na orderDTO

@@ -13,10 +13,9 @@ import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksComm
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbooksAlphabeticalCommand;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetTheMostPopularEbookCommand;
-import com.example.eordermanagerapi.order.Command.GetClientOrdersCommand;
+import com.example.eordermanagerapi.order.businessLogic.Command.GetClientOrdersCommand;
 import com.example.eordermanagerapi.order.DTO.OrderDtoView;
-import com.example.eordermanagerapi.order.Order;
-import com.example.eordermanagerapi.order.OrderService;
+import com.example.eordermanagerapi.order.businessLogic.OrderService;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;

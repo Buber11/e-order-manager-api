@@ -1,6 +1,6 @@
 package com.example.eordermanagerapi.order;
 
-import com.example.eordermanagerapi.order.Enum.OrderStatus;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,8 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

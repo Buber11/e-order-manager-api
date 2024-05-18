@@ -25,12 +25,8 @@ public class Payment {
     private Date paymentDate;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
 }
-enum PaymentStatus {
-    PENDING,
-    COMPLETED,
-    CANCELED,
-    REFUNDEN
-}
+
