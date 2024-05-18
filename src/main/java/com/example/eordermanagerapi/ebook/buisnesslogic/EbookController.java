@@ -3,16 +3,20 @@ package com.example.eordermanagerapi.ebook.buisnesslogic;
 import com.example.eordermanagerapi.Fasada.Fasada;
 import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbooksAlphabeticalCommand;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetTheMostPopularEbookCommand;
+import com.example.eordermanagerapi.ebook.buisnesslogic.command.*;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ebook")
@@ -57,9 +61,26 @@ public class EbookController {
         }
     }
 
-//    @PutMapping("/add")
-//    public ResponseEntity addEbook(@RequestBody EbookRequest request, HttpServletRequest httpServletRequest){
-//        return null;
-//    }
+    @PostMapping("/add")
+    public ResponseEntity addEbook(@Valid @RequestBody EbookRequest request,
+                                   BindingResult bindingResult
+    ){
+        System.out.println(request);
+        if (bindingResult.hasErrors()) {
+
+            Map<String, String> errorsMap = new HashMap<>();
+
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                errorsMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errorsMap);
+
+        }
+
+        ModelAndView modelAndView = fasada.handle(AddEbookCommnad.from(request));
+        System.out.println(modelAndView);
+        return ResponseEntity.status(modelAndView.getStatus()).body(modelAndView.getModel().get("message"));
+    }
+
 
 }

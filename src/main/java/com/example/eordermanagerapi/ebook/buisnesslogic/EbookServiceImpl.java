@@ -1,16 +1,23 @@
 package com.example.eordermanagerapi.ebook.buisnesslogic;
 
+import com.example.eordermanagerapi.Author.Author;
+import com.example.eordermanagerapi.Author.AuthorRepository;
 import com.example.eordermanagerapi.Author.DTO.AuthorDTOForEbook;
 import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.EbookRepository;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.mapping.Collection;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,9 +26,11 @@ import java.util.stream.Collectors;
 public class EbookServiceImpl implements EbookService {
 
     private final EbookRepository ebookRepository;
+    private final AuthorRepository authorRepository;
 
-    public EbookServiceImpl(EbookRepository ebookRepository) {
+    public EbookServiceImpl(EbookRepository ebookRepository, AuthorRepository authorRepository) {
         this.ebookRepository = ebookRepository;
+        this.authorRepository = authorRepository;
     }
 
     @Override
@@ -145,8 +154,32 @@ public class EbookServiceImpl implements EbookService {
     }
 
     @Override
-    public boolean addEbook(EbookRequest request, HttpServletRequest httpServletRequest) {
-        long userId = (long) httpServletRequest.getAttribute("id");
-        return true;
+    public ModelAndView addEbook(EbookRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        try {
+           Ebook.builder()
+                    .title(request.title())
+                    .tag(request.tag())
+                    .rating(request.rating())
+                    .image(request.imagineUrl())
+                    .authors(request.author().stream()
+                            .map(e -> {
+                                if (authorRepository.existsById(e)) {
+                                    return authorRepository.getReferenceById(e);
+                                } else {
+                                    throw new RuntimeException("Author with id " + e + " not found");
+                                }
+                            })
+                            .collect(Collectors.toCollection(LinkedList::new))
+                    )
+                    .build();
+        } catch (RuntimeException e) {
+            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
+            modelAndView.addObject("message",e.getMessage());
+            return modelAndView;
+        }
+
+        modelAndView.setStatus(HttpStatus.OK);
+        return modelAndView;
     }
 }

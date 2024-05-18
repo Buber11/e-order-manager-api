@@ -35,8 +35,7 @@ public class User implements UserDetails {
     )
     private List<Address> addresses;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Client client;
+
 
     public User() {
     }

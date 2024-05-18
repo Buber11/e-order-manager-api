@@ -8,8 +8,7 @@ import java.util.List;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Ebook {

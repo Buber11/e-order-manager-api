@@ -4,6 +4,7 @@ import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface EbookService {
     List<EbookDTOView> getTheMostPopular(int amount);
     List<EbookDTOView> getEbooksAlphabetical();
 
-    boolean addEbook(EbookRequest request, HttpServletRequest httpServletRequest);
+    ModelAndView addEbook(EbookRequest request);
 
 
 }

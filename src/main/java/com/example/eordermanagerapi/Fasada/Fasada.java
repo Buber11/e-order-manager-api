@@ -9,10 +9,7 @@ import com.example.eordermanagerapi.auth.commands.*;
 import com.example.eordermanagerapi.auth.AuthenticationService;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetAllEbooksCommand;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbookCommand;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetEbooksAlphabeticalCommand;
-import com.example.eordermanagerapi.ebook.buisnesslogic.command.GetTheMostPopularEbookCommand;
+import com.example.eordermanagerapi.ebook.buisnesslogic.command.*;
 import com.example.eordermanagerapi.order.businessLogic.Command.GetClientOrdersCommand;
 import com.example.eordermanagerapi.order.DTO.OrderDtoView;
 import com.example.eordermanagerapi.order.businessLogic.OrderService;
@@ -26,6 +23,7 @@ import com.example.eordermanagerapi.user.command.GetUserCommand;
 import com.example.eordermanagerapi.user.command.UpdateUserCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,6 +94,7 @@ public class Fasada {
    public AuthorDTOView handle(GetAuthorCommand command){
         return command.execute(authorService);
    }
+   public ModelAndView handle(AddEbookCommnad commnad){return commnad.execute(ebookService);}
 
 
     @Autowired
