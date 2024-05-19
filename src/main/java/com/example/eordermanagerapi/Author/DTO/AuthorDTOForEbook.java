@@ -10,7 +10,7 @@ import java.util.Date;
 @Setter
 @Getter
 public class AuthorDTOForEbook {
-    private long authorId;
+    private long Id;
     private Date signUpDate;
     private String name;
     private String surname;

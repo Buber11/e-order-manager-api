@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class EbookDTOView {
-    private Long ebookId;
+    private Long id;
     private String image;
     private String title;
     private Long rating;

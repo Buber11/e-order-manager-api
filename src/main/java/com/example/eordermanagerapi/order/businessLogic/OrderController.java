@@ -38,9 +38,7 @@ public class OrderController {
                               BindingResult bindingResult
     ){
         if (bindingResult.hasErrors()) {
-
             Map<String, String> errorsMap = new HashMap<>();
-
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 errorsMap.put(fieldError.getField(), fieldError.getDefaultMessage());
             }

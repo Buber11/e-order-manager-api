@@ -89,9 +89,7 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public ResponseEntity logout(@CookieValue(name = "jwt_token")String token){
-        System.out.println("weszło");
         //fasada.handle(LogoutCommand.from(cookie));
-        System.out.println("udało się");
         return ResponseEntity.ok().build();
     }
 

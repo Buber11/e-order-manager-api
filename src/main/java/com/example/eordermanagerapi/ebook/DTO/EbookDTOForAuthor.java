@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @Getter
 public class EbookDTOForAuthor {
-    private Long ebookId;
+    private Long Id;
     private String image;
     private String title;
     private Long rating;

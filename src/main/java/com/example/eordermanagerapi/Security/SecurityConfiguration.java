@@ -37,7 +37,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(e -> e
-                        .requestMatchers("api/auth/login","api/auth/signup").permitAll()
+                        .requestMatchers("api/auth/login", "api/auth/signup","api/ebook/getAll","api/ebook/get").permitAll()
                         .anyRequest().authenticated()
 
         );

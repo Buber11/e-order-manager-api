@@ -34,9 +34,8 @@ public class OrderServiceImpl implements OrderService {
     public ModelAndView addOrder(OrderRequest request, HttpServletRequest httpServletRequest) {
         ModelAndView modelAndView = new ModelAndView();
         long userId = (long) httpServletRequest.getAttribute("id");
-        System.out.println(userId);
+
         long clientId = clientRepository.getClinetIdByUserId(userId);
-        System.out.println(clientId);
 
         Order order = Order.builder()
                 .status(OrderStatus.IN_PROGRESS)
@@ -46,7 +45,6 @@ public class OrderServiceImpl implements OrderService {
         try {
             Order createdOrder = orderRepository.save(order);
             long orderId = createdOrder.getOrderId();
-            System.out.println(orderId);
 
             if (orderId > 0) {
                 OrderNeo4j orderNeo4j = OrderNeo4j.builder()
