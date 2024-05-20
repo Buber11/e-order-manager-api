@@ -20,4 +20,5 @@ public class EbookDTOView {
     private List<AuthorDTOForEbook> authors;
     private List<AdditionalContentDTOView> additionalContents;
     private String mainContent;
+    private Double price;
 }

@@ -35,5 +35,7 @@ public class Ebook {
     @ManyToMany(mappedBy = "ebooks")
     private List<Author> authors;
 
+    private Double price;
+
 
 }

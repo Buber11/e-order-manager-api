@@ -43,6 +43,7 @@ public class EbookServiceImpl implements EbookService {
                                 .rating(ebook.getRating())
                                 .image(ebook.getImage())
                                 .mainContent(ebook.getMainContent())
+                                .price(ebook.getPrice())
                                 .authors( ebook.getAuthors().stream()
                                         .map(author -> {
                                             return AuthorDTOForEbook.builder()
@@ -84,6 +85,7 @@ public class EbookServiceImpl implements EbookService {
                     .title(ebook.getTitle())
                     .id(ebook.getEbookId())
                     .rating(ebook.getRating())
+                    .price(ebook.getPrice())
                     .mainContent(ebook.getMainContent())
                     .authors( ebook.getAuthors().stream()
                             .map(author -> {
@@ -124,6 +126,7 @@ public class EbookServiceImpl implements EbookService {
                                 .title(ebook.getTitle())
                                 .rating(ebook.getRating())
                                 .image(ebook.getImage())
+                                .price(ebook.getPrice())
                                 .mainContent(ebook.getMainContent())
                                 .authors( ebook.getAuthors().stream()
                                         .map(author -> {
@@ -167,6 +170,7 @@ public class EbookServiceImpl implements EbookService {
                                 .title(ebook.getTitle())
                                 .rating(ebook.getRating())
                                 .image(ebook.getImage())
+                                .price(ebook.getPrice())
                                 .mainContent(ebook.getMainContent())
                                 .authors( ebook.getAuthors().stream()
                                         .map(author -> {
@@ -208,6 +212,7 @@ public class EbookServiceImpl implements EbookService {
                     .rating(request.rating())
                     .image(request.imageUrl())
                     .mainContent(request.mainContent())
+                    .price(request.price())
                     .authors(request.author().stream()
                             .map(e -> {
                                 if (authorRepository.existsById(e)) {

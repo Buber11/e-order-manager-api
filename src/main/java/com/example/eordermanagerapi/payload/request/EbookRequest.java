@@ -19,6 +19,9 @@ public record EbookRequest(
 
         List<String> contentURL,
         @NotEmpty(message = "main content is empty")
-        String mainContent
+        String mainContent,
+        @Positive(message = "price have to be positive")
+        @NotNull(message = "price is null")
+        Double price
 ) {
 }
