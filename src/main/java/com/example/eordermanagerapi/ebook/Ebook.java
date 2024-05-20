@@ -1,6 +1,7 @@
 package com.example.eordermanagerapi.ebook;
 
 import com.example.eordermanagerapi.Author.Author;
+import com.example.eordermanagerapi.additionalContent.AdditionalContent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,12 @@ public class Ebook {
     private Long rating;
 
     private String tag;
+
+    @OneToMany(mappedBy = "ebook",cascade = CascadeType.ALL)
+    private List<AdditionalContent> additionalContent;
+
+    @Column(name = "main_content")
+    private String mainContent;
 
     @ManyToMany(mappedBy = "ebooks")
     private List<Author> authors;

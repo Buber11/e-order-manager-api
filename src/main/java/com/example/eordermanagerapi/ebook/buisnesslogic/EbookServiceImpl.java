@@ -1,23 +1,17 @@
 package com.example.eordermanagerapi.ebook.buisnesslogic;
 
-import com.example.eordermanagerapi.Author.Author;
 import com.example.eordermanagerapi.Author.AuthorRepository;
 import com.example.eordermanagerapi.Author.DTO.AuthorDTOForEbook;
+import com.example.eordermanagerapi.additionalContent.AdditionalContent;
+import com.example.eordermanagerapi.additionalContent.AdditionalContentDTOView;
 import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.EbookRepository;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
-import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.mapping.Collection;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,9 +32,8 @@ public class EbookServiceImpl implements EbookService {
 
     @Override
     public ResponseEntity getAllBooks() {
-        List<Ebook> ebooks = ebookRepository.findAll();
-
         try {
+            List<Ebook> ebooks = ebookRepository.findAll();
             List<EbookDTOView> ebookDTOViews = ebooks.stream()
                     .map(ebook -> {
                         return EbookDTOView.builder()
@@ -49,6 +42,7 @@ public class EbookServiceImpl implements EbookService {
                                 .title(ebook.getTitle())
                                 .rating(ebook.getRating())
                                 .image(ebook.getImage())
+                                .mainContent(ebook.getMainContent())
                                 .authors( ebook.getAuthors().stream()
                                         .map(author -> {
                                             return AuthorDTOForEbook.builder()
@@ -61,13 +55,21 @@ public class EbookServiceImpl implements EbookService {
                                         })
                                         .collect(Collectors.toList())
                                 )
+                                .additionalContents(ebook.getAdditionalContent().stream()
+                                        .map(additionalContent -> {
+                                            return AdditionalContentDTOView.builder()
+                                                    .contentURL(additionalContent.getContentURL())
+                                                    .contentId(additionalContent.getContentId())
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList()))
                                 .build();
 
                     })
                     .collect(Collectors.toList());
             return buildSuccessResponse(ebookDTOViews);
         }catch (Exception e){
-            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"An error occurred while fetching ebooks.");
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"An error occurred while fetching ebooks." + e.getMessage());
         }
     }
 
@@ -82,6 +84,7 @@ public class EbookServiceImpl implements EbookService {
                     .title(ebook.getTitle())
                     .id(ebook.getEbookId())
                     .rating(ebook.getRating())
+                    .mainContent(ebook.getMainContent())
                     .authors( ebook.getAuthors().stream()
                             .map(author -> {
                                return AuthorDTOForEbook.builder()
@@ -92,8 +95,15 @@ public class EbookServiceImpl implements EbookService {
                                         .signUpDate(author.getSignUpDate())
                                         .build();
                             } )
-                            .collect(Collectors.toList())
-                    )
+                            .collect(Collectors.toList()))
+                    .additionalContents(ebook.getAdditionalContent().stream()
+                            .map(additionalContent -> {
+                                return AdditionalContentDTOView.builder()
+                                        .contentURL(additionalContent.getContentURL())
+                                        .contentId(additionalContent.getContentId())
+                                        .build();
+                            })
+                            .collect(Collectors.toList()))
                     .build();
             return buildSuccessResponse(ebookDTOView);
         }else {
@@ -104,8 +114,8 @@ public class EbookServiceImpl implements EbookService {
 
     @Override
     public ResponseEntity getTheMostPopular(int amount) {
-        List<Ebook> ebooks = ebookRepository.getTopEbooks(PageRequest.of(0,amount));
         try {
+            List<Ebook> ebooks = ebookRepository.getTopEbooks(PageRequest.of(0,amount));
             List<EbookDTOView> ebookDTOViews = ebooks.stream()
                     .map(ebook -> {
                         return EbookDTOView.builder()
@@ -114,6 +124,7 @@ public class EbookServiceImpl implements EbookService {
                                 .title(ebook.getTitle())
                                 .rating(ebook.getRating())
                                 .image(ebook.getImage())
+                                .mainContent(ebook.getMainContent())
                                 .authors( ebook.getAuthors().stream()
                                         .map(author -> {
                                             return AuthorDTOForEbook.builder()
@@ -126,6 +137,14 @@ public class EbookServiceImpl implements EbookService {
                                         })
                                         .collect(Collectors.toList())
                                 )
+                                .additionalContents(ebook.getAdditionalContent().stream()
+                                        .map(additionalContent -> {
+                                            return AdditionalContentDTOView.builder()
+                                                    .contentURL(additionalContent.getContentURL())
+                                                    .contentId(additionalContent.getContentId())
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList()))
                                 .build();
 
                     })
@@ -138,9 +157,8 @@ public class EbookServiceImpl implements EbookService {
 
     @Override
     public ResponseEntity getEbooksAlphabetical() {
-        List<Ebook> ebooks = ebookRepository.getEbooksAlphabeticalOrder();
-
         try {
+            List<Ebook> ebooks = ebookRepository.getEbooksAlphabeticalOrder();
             List<EbookDTOView> ebookDTOViews = ebooks.stream()
                     .map(ebook -> {
                         return EbookDTOView.builder()
@@ -149,6 +167,7 @@ public class EbookServiceImpl implements EbookService {
                                 .title(ebook.getTitle())
                                 .rating(ebook.getRating())
                                 .image(ebook.getImage())
+                                .mainContent(ebook.getMainContent())
                                 .authors( ebook.getAuthors().stream()
                                         .map(author -> {
                                             return AuthorDTOForEbook.builder()
@@ -161,6 +180,14 @@ public class EbookServiceImpl implements EbookService {
                                         })
                                         .collect(Collectors.toList())
                                 )
+                                .additionalContents(ebook.getAdditionalContent().stream()
+                                        .map(additionalContent -> {
+                                            return AdditionalContentDTOView.builder()
+                                                    .contentURL(additionalContent.getContentURL())
+                                                    .contentId(additionalContent.getContentId())
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList()))
                                 .build();
 
                     })
@@ -175,11 +202,12 @@ public class EbookServiceImpl implements EbookService {
     @Override
     public ResponseEntity addEbook(EbookRequest request) {
         try {
-           Ebook.builder()
+           Ebook ebook = Ebook.builder()
                     .title(request.title())
                     .tag(request.tag())
                     .rating(request.rating())
-                    .image(request.imagineUrl())
+                    .image(request.imageUrl())
+                    .mainContent(request.mainContent())
                     .authors(request.author().stream()
                             .map(e -> {
                                 if (authorRepository.existsById(e)) {
@@ -191,6 +219,19 @@ public class EbookServiceImpl implements EbookService {
                             .collect(Collectors.toCollection(LinkedList::new))
                     )
                     .build();
+
+           List<AdditionalContent> additionalContents = request.contentURL().stream()
+                   .map( url ->{
+                       return AdditionalContent.builder()
+                               .ebook(ebook)
+                               .contentURL(url)
+                               .build();
+                   }).collect(Collectors.toList());
+
+
+           ebook.setAdditionalContent(additionalContents);
+           ebookRepository.save(ebook);
+
         } catch (RuntimeException e) {
 
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"an error occured while adding book.");

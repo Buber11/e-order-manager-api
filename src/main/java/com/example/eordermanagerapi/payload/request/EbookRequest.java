@@ -1,14 +1,12 @@
 package com.example.eordermanagerapi.payload.request;
 
-import jakarta.mail.event.MailEvent;
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 
 public record EbookRequest(
         @NotBlank(message = "image_url is empty")
-        String imagineUrl,
+        String imageUrl,
         @NotBlank(message = "title is empty")
         String title,
 //        @EachPositive(message = "Each author ID must be positive")
@@ -17,6 +15,10 @@ public record EbookRequest(
         @Max(value = 10,message = "max value is 10")
         Long rating,
         @NotBlank(message = "tag is empty")
-        String tag
+        String tag,
+
+        List<String> contentURL,
+        @NotEmpty(message = "main content is empty")
+        String mainContent
 ) {
 }
