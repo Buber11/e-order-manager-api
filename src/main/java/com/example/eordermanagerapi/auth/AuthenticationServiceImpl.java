@@ -14,13 +14,21 @@ import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import com.example.eordermanagerapi.user.User;
 import com.example.eordermanagerapi.user.UserRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.Banner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -45,7 +53,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public JwtResponse authenticate(AuthRequest input) {
+    public ResponseEntity<Map<String, String>> authenticate(AuthRequest input, HttpServletResponse httpServletResponse) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -54,80 +62,104 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     )
             );
         } catch (AuthenticationException e) {
-
-            return null;
+            return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials provided");
         }
 
         Optional<User> userOpt = userRepository.findByEmail(input.email());
-        HashMap claims = new HashMap();
-        claims.put("id",userOpt.get().getUserId());
+        if (userOpt.isEmpty()) {
+            return buildErrorResponse(HttpStatus.NOT_FOUND, "User not found");
+        }
 
-        String jwtToken = jwtService.generateToken(claims,userOpt.get());
-        return JwtResponse.builder()
-                .token(jwtToken)
-                .expiresIn(jwtService.getExpirationTime())
-                .build();
+        User user = userOpt.get();
+        String jwtToken = jwtService.generateToken(Map.of("id", user.getUserId()), user);
+        Cookie cookie = createJwtCookie(jwtToken);
+        httpServletResponse.addCookie(cookie);
 
+        return buildSuccessResponse("Authentication successful");
     }
-
     @Override
-    public Optional<UserInfoResponse> signup(SignUpRequest request) {
+    public ResponseEntity signup(SignUpRequest request) {
+
+        if (userRepository.existsByEmail(request.email())) {
+            return buildErrorResponse(HttpStatus.BAD_REQUEST,"An account with this email already exists");
+        }
+
         User newUser = User.builder()
                 .email(request.email())
                 .name(request.name())
                 .surname(request.surname())
                 .password(passwordEncoder.encode(request.password()))
                 .build();
-        userRepository.save(newUser);
 
-        if(userRepository.existsByEmail(request.email())){
-            return Optional.of(UserInfoResponse.builder()
-                    .email(newUser.getEmail())
-                    .name(newUser.getName())
-                    .surname(newUser.getSurname())
-                    .build());
-        }else {
-            return Optional.empty();
-        }
+        User savedUser = userRepository.save(newUser);
 
-
-    }
-
-    @Override
-    public ValidateSessionResponse getValidateSession(Long userId) {
-        if(userRepository.existsById(userId)){
-            return new ValidateSessionResponse(true);
-        }else {
-            return new ValidateSessionResponse(false);
-        }
-    }
-
-    @Override
-    public JwtResponse refreshToken(Long userId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        if(userOpt.isPresent()){
-            HashMap claims = new HashMap();
-            claims.put("id",userId);
-
-            String jwtToken = jwtService.generateToken(claims,userOpt.get());
-            return JwtResponse.builder()
-                    .token(jwtToken)
-                    .expiresIn(jwtService.getExpirationTime())
+        if (Long.valueOf(savedUser.getUserId()) != null) {
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
+                    .email(savedUser.getEmail())
+                    .name(savedUser.getName())
+                    .surname(savedUser.getSurname())
                     .build();
-        }else {
-            return null;
+
+            return buildSuccessResponse("account built succesfully");
+        } else {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"something went wrong");
         }
+    }
+
+    @Override
+    public ResponseEntity getValidateSession(HttpServletRequest httpServletRequest) {
+        long userId = (long) httpServletRequest.getAttribute("id");
+
+        if(userRepository.existsById(userId)){
+            return buildSuccessResponse("Session is valid");
+        }else {
+            return buildSuccessResponse("Session is invalid");
+        }
+
+    }
+
+    @Override
+    public ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse httpServletResponse) {
+        long userId = (long) request.getAttribute("id");
+        Optional<User> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isEmpty()) {
+            return buildErrorResponse(HttpStatus.UNAUTHORIZED,"User not found");
+        }
+
+        User user = userOpt.get();
+        String jwtToken = jwtService.generateToken(Map.of("id", userId), user);
+
+        Cookie cookie = createJwtCookie(jwtToken);
+        httpServletResponse.addCookie(cookie);
+
+        return buildSuccessResponse("Token refreshed successfully");
     }
 
     @Override
     public void logout(Cookie cookie) {
         String tokenStr = cookie.getValue();
-        System.out.println(tokenStr);
         Token token = Token.builder()
                         .token(tokenStr)
                         .build();
         tokenRepository.save(token);
     }
 
+    private Cookie createJwtCookie(String jwtToken) {
+        Cookie cookie = new Cookie("jwt_token", jwtToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(true);
+        cookie.setMaxAge(5 * 3600);
+        return cookie;
+    }
+
+    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(Map.of("error", message));
+    }
+
+    private ResponseEntity<Map<String, String>> buildSuccessResponse(String message) {
+        return ResponseEntity.ok(Map.of("message", message));
+    }
 
 }

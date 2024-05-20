@@ -7,16 +7,20 @@ import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
 public interface AuthenticationService {
-    JwtResponse authenticate(AuthRequest input);
-    Optional<UserInfoResponse> signup(SignUpRequest request);
+    ResponseEntity authenticate(AuthRequest input, HttpServletResponse httpServletResponse);
+    ResponseEntity signup(SignUpRequest request);
 
-    ValidateSessionResponse getValidateSession(Long userId);
-    JwtResponse refreshToken(Long userId);
+    ResponseEntity getValidateSession(HttpServletRequest httpServletRequest);
+    ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse response);
     void logout(Cookie cookie);
 
 

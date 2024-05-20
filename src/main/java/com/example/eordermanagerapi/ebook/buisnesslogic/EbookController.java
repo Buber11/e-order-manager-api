@@ -31,8 +31,7 @@ public class EbookController {
     @GetMapping("/get-the-most-popular")
     public ResponseEntity getTheMostPopular(@RequestParam(name ="amount")int amount){
         if(amount >= 0){
-            List<EbookDTOView> ebooks = fasada.handle(GetTheMostPopularEbookCommand.from(amount));
-            return ResponseEntity.ok(ebooks);
+            return fasada.handle(GetTheMostPopularEbookCommand.from(amount));
         }else {
             return ResponseEntity.badRequest().build();
         }
@@ -40,25 +39,17 @@ public class EbookController {
 
     @GetMapping("/get-alphabetical")
     public ResponseEntity getAlphabetical(){
-        List<EbookDTOView> ebooks = fasada.handle(GetEbooksAlphabeticalCommand.from());
-        return ResponseEntity.ok(ebooks);
+        return fasada.handle(GetEbooksAlphabeticalCommand.from());
     }
 
     @GetMapping("/getAll")
     public ResponseEntity getAllEbooks(){
-
-        List<EbookDTOView> ebooks = fasada.handle(GetAllEbooksCommand.from());
-        return ResponseEntity.ok(ebooks);
+        return fasada.handle(GetAllEbooksCommand.from());
     }
 
     @GetMapping("/get")
     public ResponseEntity getEbook(@RequestParam Long ebookId){
-        EbookDTOView resposne = fasada.handle(GetEbookCommand.from(ebookId));
-        if(resposne != null){
-            return ResponseEntity.ok(resposne);
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+       return fasada.handle(GetEbookCommand.from(ebookId));
     }
 
     @PostMapping("/add")
@@ -75,10 +66,7 @@ public class EbookController {
             return ResponseEntity.badRequest().body(errorsMap);
 
         }
-
-        ModelAndView modelAndView = fasada.handle(AddEbookCommnad.from(request));
-        System.out.println(modelAndView);
-        return ResponseEntity.status(modelAndView.getStatus()).body(modelAndView.getModel().get("message"));
+        return fasada.handle(AddEbookCommnad.from(request));
     }
 
 

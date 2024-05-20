@@ -24,17 +24,11 @@ public class AuthorController {
 
     @GetMapping("/getAll")
     public ResponseEntity getAll(){
-        var authors = fasada.handle(GetAllAuthorsCommand.from());
-        return ResponseEntity.ok(authors);
+        return fasada.handle(GetAllAuthorsCommand.from());
     }
     @GetMapping("/get")
     public ResponseEntity get(@RequestParam(name = "id")long authorId){
-        var author = fasada.handle(GetAuthorCommand.from(authorId));
-        if(author != null){
-            return ResponseEntity.ok(author);
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+       return fasada.handle(GetAuthorCommand.from(authorId));
     }
 
 }

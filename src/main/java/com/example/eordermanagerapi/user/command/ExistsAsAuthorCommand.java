@@ -3,8 +3,11 @@ package com.example.eordermanagerapi.user.command;
 import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.boot.Banner;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.ModelAndView;
 
-public class ExistsAsAuthorCommand implements Command<Boolean, UserService> {
+public class ExistsAsAuthorCommand implements Command<ResponseEntity, UserService> {
 
     private final HttpServletRequest httpServletRequest;
 
@@ -14,9 +17,8 @@ public class ExistsAsAuthorCommand implements Command<Boolean, UserService> {
     public static ExistsAsAuthorCommand from(HttpServletRequest httpServletRequest){
         return new ExistsAsAuthorCommand(httpServletRequest);
     }
-
     @Override
-    public Boolean execute(UserService userService) {
+    public ResponseEntity execute(UserService userService) {
         return userService.existsAsAuthor(httpServletRequest);
     }
 }

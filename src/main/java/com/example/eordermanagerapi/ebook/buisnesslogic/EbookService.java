@@ -4,18 +4,19 @@ import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 public interface EbookService {
 
-    List<EbookDTOView> getAllBooks();
-    EbookDTOView getEbook(long ebookId);
-    List<EbookDTOView> getTheMostPopular(int amount);
-    List<EbookDTOView> getEbooksAlphabetical();
+    ResponseEntity getAllBooks();
+    ResponseEntity getEbook(long ebookId);
+    ResponseEntity getTheMostPopular(int amount);
+    ResponseEntity getEbooksAlphabetical();
 
-    ModelAndView addEbook(EbookRequest request);
+    ResponseEntity addEbook(EbookRequest request);
 
 
 }

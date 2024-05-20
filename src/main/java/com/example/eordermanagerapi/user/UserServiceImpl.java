@@ -7,9 +7,15 @@ import com.example.eordermanagerapi.payload.request.UserChangesRequest;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.query.UnknownParameterException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
@@ -28,36 +34,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoResponse getUser(Long userId) {
+    public ResponseEntity getUser(HttpServletRequest httpServletRequest) {
+        long userId = (long) httpServletRequest.getAttribute("id");
         Optional<User> userOpt = userRepository.findById(userId);
         if(userOpt.isPresent()){
             User user = userOpt.get();
-            return UserInfoResponse.builder()
+            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
                     .name(user.getName())
                     .surname(user.getSurname())
                     .email(user.getName())
                     .build();
+            return ResponseEntity.ok(userInfoResponse);
         }else {
-            return null;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("something went wrong");
         }
 
     }
 
     @Override
-    public Boolean deleteUser(Long userId) {
-        if(userRepository.existsById(userId)){
+    public ResponseEntity deleteUser(HttpServletRequest request) {
+        long userId = (long) request.getAttribute("id");
+
+        if (!userRepository.existsById(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user don't exist");
+        }
+
+        try {
             userRepository.deleteById(userId);
-            return true;
-        }else {
-            return false;
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("user has not been deleted");
         }
     }
 
     @Override
-    public JwtResponse updateUser(Long userId, UserChangesRequest request) {
+    public ResponseEntity updateUser(HttpServletRequest httpServletRequest,
+                                   HttpServletResponse httpServletResponse,
+                                   UserChangesRequest request) {
         User updatedUser;
         AuthRequest authRequest;
-
+        long userId = (long) httpServletRequest.getAttribute("id");
         if(request.name() == null
                 && request.surname() == null
                 && request.email() == null
@@ -87,12 +103,18 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.save(updatedUser);
         
-        return fasada.handle(LoginCommand.from(authRequest));
+        return fasada.handle(LoginCommand.from(authRequest,httpServletResponse));
     }
 
     @Override
-    public boolean existsAsAuthor(HttpServletRequest httpServletRequest) {
+    public ResponseEntity existsAsAuthor(HttpServletRequest httpServletRequest) {
         long userId = (long) httpServletRequest.getAttribute("id");
-        return userRepository.existsAsAuthor(userId);
+        boolean exists = userRepository.existsAsAuthor(userId);
+
+        if (exists) {
+            return ResponseEntity.ok().body("this user is an author");
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("this user is not an author");
+        }
     }
 }

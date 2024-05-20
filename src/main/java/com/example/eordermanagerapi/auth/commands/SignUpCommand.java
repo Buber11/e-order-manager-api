@@ -4,10 +4,11 @@ import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.auth.AuthenticationService;
 import com.example.eordermanagerapi.payload.request.SignUpRequest;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
-public class SignUpCommand implements Command<Optional<UserInfoResponse>, AuthenticationService> {
+public class SignUpCommand implements Command<ResponseEntity, AuthenticationService> {
 
     private final SignUpRequest request;
 
@@ -19,7 +20,7 @@ public class SignUpCommand implements Command<Optional<UserInfoResponse>, Authen
     }
 
     @Override
-    public Optional<UserInfoResponse> execute(AuthenticationService authenticationService) {
+    public ResponseEntity execute(AuthenticationService authenticationService) {
         return authenticationService.signup(request);
     }
 }

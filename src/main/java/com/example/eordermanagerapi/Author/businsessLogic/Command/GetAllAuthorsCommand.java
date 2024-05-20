@@ -4,10 +4,11 @@ import com.example.eordermanagerapi.Author.DTO.AuthorDTOView;
 import com.example.eordermanagerapi.Author.businsessLogic.AuthorService;
 import com.example.eordermanagerapi.Author.businsessLogic.AuthorServiceImpl;
 import com.example.eordermanagerapi.Fasada.Command;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public class GetAllAuthorsCommand implements Command<List<AuthorDTOView>, AuthorService> {
+public class GetAllAuthorsCommand implements Command<ResponseEntity, AuthorService> {
 
     private GetAllAuthorsCommand() {
     }
@@ -17,7 +18,7 @@ public class GetAllAuthorsCommand implements Command<List<AuthorDTOView>, Author
     }
 
     @Override
-    public List<AuthorDTOView> execute(AuthorService authorService) {
+    public ResponseEntity execute(AuthorService authorService) {
         return authorService.getAll();
     }
 }

@@ -3,19 +3,23 @@ package com.example.eordermanagerapi.user.command;
 import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 
-public class GetUserCommand implements Command<UserInfoResponse, UserService> {
+public class GetUserCommand implements Command<ResponseEntity, UserService> {
 
-    private final Long userId;
-    private GetUserCommand(Long userId) {
-        this.userId = userId;
+    private final HttpServletRequest httpServletRequest;
+
+    private GetUserCommand(HttpServletRequest httpServletRequest) {
+        this.httpServletRequest = httpServletRequest;
     }
-    public static GetUserCommand from(Long userId){
-        return new GetUserCommand(userId);
+
+    public static GetUserCommand from(HttpServletRequest request){
+        return new GetUserCommand(request);
     }
 
     @Override
-    public UserInfoResponse execute(UserService userService) {
-        return userService.getUser(userId);
+    public ResponseEntity execute(UserService userService) {
+        return userService.getUser(httpServletRequest);
     }
 }

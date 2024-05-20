@@ -6,11 +6,9 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Setter
-@Getter
+@Data
 public class AuthorDTOForEbook {
-    private long Id;
+    private long id;
     private Date signUpDate;
     private String name;
     private String surname;

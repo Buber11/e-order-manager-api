@@ -9,8 +9,10 @@ import com.example.eordermanagerapi.user.command.ExistsAsAuthorCommand;
 import com.example.eordermanagerapi.user.command.GetUserCommand;
 import com.example.eordermanagerapi.user.command.UpdateUserCommand;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping("/api/user")
 @RestController
@@ -24,46 +26,24 @@ public class UserController {
 
     @GetMapping("/get")
     public ResponseEntity getUser(HttpServletRequest request){
-        Long userId = (Long) request.getAttribute("id");
-        UserInfoResponse response = fasada.handle(GetUserCommand.from(userId));
-        if(response != null){
-            return ResponseEntity.ok(request);
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+        return fasada.handle(GetUserCommand.from(request));
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity deleteUser(HttpServletRequest request){
-        Long userId = (Long) request.getAttribute("id");
-        boolean response = fasada.handle(DeleteUserCommand.from(userId));
 
-        if(response){
-            return ResponseEntity.noContent().build();
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+        return fasada.handle(DeleteUserCommand.from(request));
     }
 
     @PutMapping("/update")
-    public ResponseEntity updateUser(HttpServletRequest request,
-                                     @RequestBody UserChangesRequest userRequest){
-        Long userId = (Long) request.getAttribute("id");
-        JwtResponse response = fasada.handle(UpdateUserCommand.from(userId, userRequest));
+    public ResponseEntity updateUser(HttpServletRequest httpServletRequest,
+                                     @RequestBody UserChangesRequest userRequest,
+                                     HttpServletResponse httpServletResponse){
 
-        if(response == null){
-            return ResponseEntity.ok(request);
-        }else {
-            return ResponseEntity.badRequest().build();
-        }
+        return fasada.handle(UpdateUserCommand.from(httpServletRequest,httpServletResponse,userRequest));
     }
     @GetMapping("/exists-as-author")
     public ResponseEntity existsAsAuthor(HttpServletRequest httpServletRequest){
-        var existsAsAuthor = fasada.handle(ExistsAsAuthorCommand.from(httpServletRequest));
-        if(existsAsAuthor){
-            return ResponseEntity.ok().build();
-        }else {
-            return ResponseEntity.noContent().build();
-        }
+        return fasada.handle(ExistsAsAuthorCommand.from(httpServletRequest));
     }
 }

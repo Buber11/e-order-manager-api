@@ -4,9 +4,12 @@ import com.example.eordermanagerapi.Author.Author;
 import com.example.eordermanagerapi.Author.AuthorRepository;
 import com.example.eordermanagerapi.Author.DTO.AuthorDTOView;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOForAuthor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,39 +22,46 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<AuthorDTOView> getAll() {
+    public ResponseEntity getAll() {
         List<Author> authors = authorRepository.findAll();
-        return authors.stream()
-                .map(author ->{
-                    return AuthorDTOView.builder()
-                            .authorId(author.getAuthorId())
-                            .name(author.getUser().getName())
-                            .surname(author.getUser().getSurname())
-                            .email(author.getUser().getEmail())
-                            .signUpDate(author.getSignUpDate())
-                            .ebooks( author.getEbooks().stream()
-                                    .map(ebook -> {
-                                        return EbookDTOForAuthor.builder()
-                                                .title(ebook.getTitle())
-                                                .tag(ebook.getTag())
-                                                .image(ebook.getImage())
-                                                .ebookId(ebook.getEbookId())
-                                                .rating(ebook.getRating())
-                                                .build();
-                                    }).collect(Collectors.toList())
-                            ).build();
-                }).collect(Collectors.toList());
+        try {
+            List<AuthorDTOView> authorDTOViews = authors.stream()
+                    .map(author ->{
+                        return AuthorDTOView.builder()
+                                .id(author.getAuthorId())
+                                .name(author.getUser().getName())
+                                .surname(author.getUser().getSurname())
+                                .email(author.getUser().getEmail())
+                                .signUpDate(author.getSignUpDate())
+                                .ebooks( author.getEbooks().stream()
+                                        .map(ebook -> {
+                                            return EbookDTOForAuthor.builder()
+                                                    .title(ebook.getTitle())
+                                                    .tag(ebook.getTag())
+                                                    .image(ebook.getImage())
+                                                    .id(ebook.getEbookId())
+                                                    .rating(ebook.getRating())
+                                                    .build();
+                                        }).collect(Collectors.toList())
+                                ).build();
+                    }).collect(Collectors.toList());
+
+            return buildSuccessResponse(authorDTOViews);
+
+        }catch (Exception e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"An error occurred while fetching authors.");
+        }
     }
 
     @Override
-    public AuthorDTOView get(long authorId) {
+    public ResponseEntity get(long authorId) {
         Optional<Author> authorOptional = authorRepository.findById(authorId);
         if(authorOptional.isPresent()){
             Author author = authorOptional.get();
-            return AuthorDTOView.builder()
+            AuthorDTOView authorDTOView = AuthorDTOView.builder()
                     .surname(author.getUser().getSurname())
                     .name(author.getUser().getName())
-                    .authorId(author.getAuthorId())
+                    .id(author.getAuthorId())
                     .signUpDate(author.getSignUpDate())
                     .ebooks(author.getEbooks().stream()
                             .map(ebook -> {
@@ -59,14 +69,23 @@ public class AuthorServiceImpl implements AuthorService {
                                         .rating(ebook.getRating())
                                         .title(ebook.getTitle())
                                         .tag(ebook.getTag())
-                                        .ebookId(ebook.getEbookId())
+                                        .id(ebook.getEbookId())
                                         .rating(ebook.getRating())
                                         .image(ebook.getImage())
                                         .build();
                             }).collect(Collectors.toList())
                     ).build();
+            return buildSuccessResponse(authorDTOView);
         }else {
-            return null;
+            return buildErrorResponse(HttpStatus.NOT_FOUND,"Not found this author");
         }
+    }
+
+    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(Map.of("error", message));
+    }
+
+    private <T> ResponseEntity buildSuccessResponse(T t) {
+        return ResponseEntity.ok(t);
     }
 }

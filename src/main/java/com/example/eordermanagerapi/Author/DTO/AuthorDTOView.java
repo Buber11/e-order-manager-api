@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 public class AuthorDTOView {
-    private long Id;
+    private long id;
     private Date signUpDate;
     private String name;
     private String surname;

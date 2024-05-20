@@ -23,7 +23,9 @@ import com.example.eordermanagerapi.user.command.ExistsAsAuthorCommand;
 import com.example.eordermanagerapi.user.command.GetUserCommand;
 import com.example.eordermanagerapi.user.command.UpdateUserCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -41,62 +43,77 @@ public class Fasada {
     private final AuthenticationService authenticationService;
     private EbookService ebookService;
     private AuthorService authorService;
-
     public Fasada(AuthenticationService theAuthenticationService) {
         authenticationService = theAuthenticationService;
     }
+//    authentication
 
-   public JwtResponse handle(LoginCommand command){
+    public ResponseEntity handle(LoginCommand command){
         return command.execute(authenticationService);
-   }
-   public Optional<UserInfoResponse> handle(SignUpCommand command){
+    }
+    public ResponseEntity handle(SignUpCommand command){
         return command.execute(authenticationService);
-   }
-   public UserInfoResponse handle(GetUserCommand command){
-        return command.execute(userService);
-   }
-   public Boolean handle(DeleteUserCommand command){
-        return command.execute(userService);
-   }
-   public JwtResponse handle(UpdateUserCommand command){
-        return command.execute(userService);
-   }
-   public boolean handle(ExistsAsAuthorCommand command){
-        return command.execute(userService);
-   }
-   public ValidateSessionResponse handle(ValidateSessionCommand command){
+    }
+    public ResponseEntity handle(ValidateSessionCommand command){
         return command.execute(authenticationService);
-   }
-   public JwtResponse handle(RefreshTokenCommand command){
+    }
+    public ResponseEntity handle(RefreshTokenCommand command){
         return command.execute(authenticationService);
-   }
-
-   public List<EbookDTOView> handle(GetAllEbooksCommand command){
-        return command.execute(ebookService);
-   }
-   public EbookDTOView handle(GetEbookCommand command){
-        return command.execute(ebookService);
-   }
-   public void handle(LogoutCommand command) {
+    }
+    public void handle(LogoutCommand command) {
         command.execute(authenticationService);
     }
-   public List<EbookDTOView> handle(GetTheMostPopularEbookCommand command){
+
+//    user
+
+    public ResponseEntity handle(GetUserCommand command){
+        return command.execute(userService);
+    }
+    public ResponseEntity handle(DeleteUserCommand command){
+        return command.execute(userService);
+    }
+    public ResponseEntity handle(UpdateUserCommand command){
+        return command.execute(userService);
+    }
+    public ResponseEntity handle(ExistsAsAuthorCommand command){
+        return command.execute(userService);
+    }
+
+//    ebook
+
+    public ResponseEntity handle(GetAllEbooksCommand command){
         return command.execute(ebookService);
-   }
-   public List<EbookDTOView> handle(GetEbooksAlphabeticalCommand command){
+    }
+    public ResponseEntity handle(GetEbookCommand command){
         return command.execute(ebookService);
-   }
-   public List<AuthorDTOView> handle(GetAllAuthorsCommand command){
+    }
+    public ResponseEntity handle(GetTheMostPopularEbookCommand command){
+        return command.execute(ebookService);
+    }
+    public ResponseEntity handle(GetEbooksAlphabeticalCommand command){
+        return command.execute(ebookService);
+    }
+    public ResponseEntity handle(AddEbookCommnad commnad){
+        return commnad.execute(ebookService);
+    }
+
+//    author
+
+    public ResponseEntity handle(GetAllAuthorsCommand command){
         return command.execute(authorService);
-   }
+    }
     public List<OrderDtoView> handle(GetClientOrdersCommand command){
         return command.execute(orderService);
     }
-   public AuthorDTOView handle(GetAuthorCommand command){
+    public ResponseEntity handle(GetAuthorCommand command){
         return command.execute(authorService);
-   }
-   public ModelAndView handle(AddEbookCommnad commnad){return commnad.execute(ebookService);}
-    public ModelAndView handle(AddOrderCommand command){return command.execute(orderService);}
+    }
+
+//    order
+
+    public ModelAndView handle(AddOrderCommand command){
+        return command.execute(orderService);
+    }
 
 
     @Autowired

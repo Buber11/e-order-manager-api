@@ -4,22 +4,33 @@ import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.payload.request.UserChangesRequest;
 import com.example.eordermanagerapi.payload.response.JwtResponse;
 import com.example.eordermanagerapi.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.Banner;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.ModelAndView;
 
-public class UpdateUserCommand implements Command<JwtResponse, UserService> {
+public class UpdateUserCommand implements Command<ResponseEntity, UserService> {
 
-    private final long userId;
+    private final HttpServletRequest httpServletRequest;
     private final UserChangesRequest request;
+    private final HttpServletResponse httpServletResponse;
 
-    private UpdateUserCommand(long userId, UserChangesRequest request) {
-        this.userId = userId;
+    public UpdateUserCommand(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, UserChangesRequest request) {
+        this.httpServletRequest = httpServletRequest;
         this.request = request;
+        this.httpServletResponse = httpServletResponse;
     }
-    public static UpdateUserCommand from(long userId, UserChangesRequest request){
-        return new UpdateUserCommand(userId,request);
+
+    public static UpdateUserCommand from(HttpServletRequest httpServletRequest,
+                                         HttpServletResponse httpServletResponse,
+                                         UserChangesRequest request
+                                         ){
+        return new UpdateUserCommand(httpServletRequest, httpServletResponse, request);
     }
 
     @Override
-    public JwtResponse execute(UserService userService) {
-        return userService.updateUser(userId,request);
+    public ResponseEntity execute(UserService userService) {
+        return userService.updateUser(httpServletRequest,httpServletResponse,request);
     }
 }

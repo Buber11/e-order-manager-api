@@ -14,11 +14,14 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,52 +37,57 @@ public class EbookServiceImpl implements EbookService {
     }
 
     @Override
-    public List<EbookDTOView> getAllBooks() {
+    public ResponseEntity getAllBooks() {
         List<Ebook> ebooks = ebookRepository.findAll();
 
-        return ebooks.stream()
-                .map(ebook -> {
-                    return EbookDTOView.builder()
-                            .ebookId(ebook.getEbookId())
-                            .tag(ebook.getTag())
-                            .title(ebook.getTitle())
-                            .rating(ebook.getRating())
-                            .image(ebook.getImage())
-                            .authors( ebook.getAuthors().stream()
-                                    .map(author -> {
-                                        return AuthorDTOForEbook.builder()
-                                                .authorId(author.getAuthorId())
-                                                .surname(author.getUser().getSurname())
-                                                .name(author.getUser().getName())
-                                                .email(author.getUser().getEmail())
-                                                .signUpDate(author.getSignUpDate())
-                                                .build();
-                                    })
-                                    .collect(Collectors.toList())
-                            )
-                            .build();
+        try {
+            List<EbookDTOView> ebookDTOViews = ebooks.stream()
+                    .map(ebook -> {
+                        return EbookDTOView.builder()
+                                .id(ebook.getEbookId())
+                                .tag(ebook.getTag())
+                                .title(ebook.getTitle())
+                                .rating(ebook.getRating())
+                                .image(ebook.getImage())
+                                .authors( ebook.getAuthors().stream()
+                                        .map(author -> {
+                                            return AuthorDTOForEbook.builder()
+                                                    .id( author.getAuthorId() )
+                                                    .surname(author.getUser().getSurname())
+                                                    .name(author.getUser().getName())
+                                                    .email(author.getUser().getEmail())
+                                                    .signUpDate(author.getSignUpDate())
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList())
+                                )
+                                .build();
 
-                })
-                .collect(Collectors.toList());
+                    })
+                    .collect(Collectors.toList());
+            return buildSuccessResponse(ebookDTOViews);
+        }catch (Exception e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"An error occurred while fetching ebooks.");
+        }
     }
 
     @Override
-    public EbookDTOView getEbook(long ebookId) {
+    public ResponseEntity getEbook(long ebookId) {
         Optional<Ebook> ebookOpt = ebookRepository.findById(ebookId);
         if(ebookOpt.isPresent()){
             Ebook ebook = ebookOpt.get();
-            return EbookDTOView.builder()
+            EbookDTOView ebookDTOView = EbookDTOView.builder()
                     .tag(ebook.getTag())
                     .image(ebook.getImage())
                     .title(ebook.getTitle())
-                    .ebookId(ebook.getEbookId())
+                    .id(ebook.getEbookId())
                     .rating(ebook.getRating())
                     .authors( ebook.getAuthors().stream()
                             .map(author -> {
                                return AuthorDTOForEbook.builder()
                                         .email(author.getUser().getEmail())
                                         .name(author.getUser().getName())
-                                        .authorId(author.getAuthorId())
+                                        .id(author.getAuthorId())
                                         .surname(author.getUser().getSurname())
                                         .signUpDate(author.getSignUpDate())
                                         .build();
@@ -87,75 +95,85 @@ public class EbookServiceImpl implements EbookService {
                             .collect(Collectors.toList())
                     )
                     .build();
+            return buildSuccessResponse(ebookDTOView);
         }else {
-            return null;
+            return buildErrorResponse(HttpStatus.NOT_FOUND,"Not found this ebook");
         }
 
     }
 
     @Override
-    public List<EbookDTOView> getTheMostPopular(int amount) {
+    public ResponseEntity getTheMostPopular(int amount) {
         List<Ebook> ebooks = ebookRepository.getTopEbooks(PageRequest.of(0,amount));
-        return ebooks.stream()
-                .map(ebook -> {
-                    return EbookDTOView.builder()
-                            .ebookId(ebook.getEbookId())
-                            .tag(ebook.getTag())
-                            .title(ebook.getTitle())
-                            .rating(ebook.getRating())
-                            .image(ebook.getImage())
-                            .authors( ebook.getAuthors().stream()
-                                    .map(author -> {
-                                        return AuthorDTOForEbook.builder()
-                                                .authorId(author.getAuthorId())
-                                                .surname(author.getUser().getSurname())
-                                                .name(author.getUser().getName())
-                                                .email(author.getUser().getEmail())
-                                                .signUpDate(author.getSignUpDate())
-                                                .build();
-                                    })
-                                    .collect(Collectors.toList())
-                            )
-                            .build();
+        try {
+            List<EbookDTOView> ebookDTOViews = ebooks.stream()
+                    .map(ebook -> {
+                        return EbookDTOView.builder()
+                                .id(ebook.getEbookId())
+                                .tag(ebook.getTag())
+                                .title(ebook.getTitle())
+                                .rating(ebook.getRating())
+                                .image(ebook.getImage())
+                                .authors( ebook.getAuthors().stream()
+                                        .map(author -> {
+                                            return AuthorDTOForEbook.builder()
+                                                    .id(author.getAuthorId())
+                                                    .surname(author.getUser().getSurname())
+                                                    .name(author.getUser().getName())
+                                                    .email(author.getUser().getEmail())
+                                                    .signUpDate(author.getSignUpDate())
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList())
+                                )
+                                .build();
 
-                })
-                .collect(Collectors.toList());
+                    })
+                    .collect(Collectors.toList());
+            return buildSuccessResponse(ebookDTOViews);
+        }catch (Exception e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"An error occurred while fetching ebooks.");
+        }
     }
 
     @Override
-    public List<EbookDTOView> getEbooksAlphabetical() {
+    public ResponseEntity getEbooksAlphabetical() {
         List<Ebook> ebooks = ebookRepository.getEbooksAlphabeticalOrder();
 
-        return ebooks.stream()
-                .map(ebook -> {
-                    return EbookDTOView.builder()
-                            .ebookId(ebook.getEbookId())
-                            .tag(ebook.getTag())
-                            .title(ebook.getTitle())
-                            .rating(ebook.getRating())
-                            .image(ebook.getImage())
-                            .authors( ebook.getAuthors().stream()
-                                    .map(author -> {
-                                        return AuthorDTOForEbook.builder()
-                                                .authorId(author.getAuthorId())
-                                                .surname(author.getUser().getSurname())
-                                                .name(author.getUser().getName())
-                                                .email(author.getUser().getEmail())
-                                                .signUpDate(author.getSignUpDate())
-                                                .build();
-                                    })
-                                    .collect(Collectors.toList())
-                            )
-                            .build();
+        try {
+            List<EbookDTOView> ebookDTOViews = ebooks.stream()
+                    .map(ebook -> {
+                        return EbookDTOView.builder()
+                                .id(ebook.getEbookId())
+                                .tag(ebook.getTag())
+                                .title(ebook.getTitle())
+                                .rating(ebook.getRating())
+                                .image(ebook.getImage())
+                                .authors( ebook.getAuthors().stream()
+                                        .map(author -> {
+                                            return AuthorDTOForEbook.builder()
+                                                    .id(author.getAuthorId())
+                                                    .surname(author.getUser().getSurname())
+                                                    .name(author.getUser().getName())
+                                                    .email(author.getUser().getEmail())
+                                                    .signUpDate(author.getSignUpDate())
+                                                    .build();
+                                        })
+                                        .collect(Collectors.toList())
+                                )
+                                .build();
 
-                })
-                .collect(Collectors.toList());
+                    })
+                    .collect(Collectors.toList());
+            return buildSuccessResponse(ebookDTOViews);
+        }catch (Exception e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"an error accured while fetching ebooks.");
+        }
 
     }
 
     @Override
-    public ModelAndView addEbook(EbookRequest request) {
-        ModelAndView modelAndView = new ModelAndView();
+    public ResponseEntity addEbook(EbookRequest request) {
         try {
            Ebook.builder()
                     .title(request.title())
@@ -174,12 +192,21 @@ public class EbookServiceImpl implements EbookService {
                     )
                     .build();
         } catch (RuntimeException e) {
-            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
-            modelAndView.addObject("message",e.getMessage());
-            return modelAndView;
+
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"an error occured while adding book.");
         }
 
-        modelAndView.setStatus(HttpStatus.OK);
-        return modelAndView;
+        return buildSuccessResponse("the ebooks has been added");
+    }
+
+    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(Map.of("error", message));
+    }
+
+    private <T> ResponseEntity buildSuccessResponse(T t) {
+        return ResponseEntity.ok(t);
+    }
+    private  ResponseEntity buildSuccessResponse(String message) {
+        return ResponseEntity.ok(Map.of("message",message));
     }
 }
