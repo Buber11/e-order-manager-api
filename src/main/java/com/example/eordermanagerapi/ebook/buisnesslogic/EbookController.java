@@ -48,7 +48,7 @@ public class EbookController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity getEbook(@RequestParam Long ebookId){
+    public ResponseEntity getEbook(@RequestParam("id") Long ebookId){
        return fasada.handle(GetEbookCommand.from(ebookId));
     }
 
