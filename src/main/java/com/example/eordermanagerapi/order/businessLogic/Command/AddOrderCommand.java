@@ -4,9 +4,10 @@ import com.example.eordermanagerapi.Fasada.Command;
 import com.example.eordermanagerapi.order.businessLogic.OrderService;
 import com.example.eordermanagerapi.payload.request.OrderRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class AddOrderCommand implements Command<ModelAndView, OrderService> {
+public class AddOrderCommand implements Command<ResponseEntity, OrderService> {
 
     private OrderRequest request;
     private HttpServletRequest httpServletRequest;
@@ -20,7 +21,7 @@ public class AddOrderCommand implements Command<ModelAndView, OrderService> {
     }
 
     @Override
-    public ModelAndView execute(OrderService orderService) {
+    public ResponseEntity execute(OrderService orderService) {
         return orderService.addOrder(request,httpServletRequest);
     }
 }

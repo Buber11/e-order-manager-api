@@ -102,16 +102,16 @@ public class Fasada {
     public ResponseEntity handle(GetAllAuthorsCommand command){
         return command.execute(authorService);
     }
-    public List<OrderDtoView> handle(GetClientOrdersCommand command){
-        return command.execute(orderService);
-    }
     public ResponseEntity handle(GetAuthorCommand command){
         return command.execute(authorService);
     }
 
 //    order
 
-    public ModelAndView handle(AddOrderCommand command){
+    public ResponseEntity handle(AddOrderCommand command){
+        return command.execute(orderService);
+    }
+    public ResponseEntity handle(GetClientOrdersCommand command){
         return command.execute(orderService);
     }
 

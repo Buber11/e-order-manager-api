@@ -25,12 +25,7 @@ public class OrderController {
     }
     @GetMapping("/get")
     public ResponseEntity get(@RequestParam(name = "id")long clientId){
-        var orders = fasada.handle(GetClientOrdersCommand.from(clientId));
-        if(orders != null){
-            return ResponseEntity.ok(orders);
-        }else {
-            return ResponseEntity.notFound().build();
-        }
+        return fasada.handle(GetClientOrdersCommand.from(clientId));
     }
     @PostMapping("/add")
     public ResponseEntity add(@Valid @RequestBody OrderRequest request,
@@ -45,8 +40,7 @@ public class OrderController {
             return ResponseEntity.badRequest().body(errorsMap);
         }
 
-        ModelAndView modelAndView = fasada.handle(AddOrderCommand.from(request,httpServletRequest));
-        return ResponseEntity.status(modelAndView.getStatus()).body(modelAndView.getModel().get("error"));
+        return fasada.handle(AddOrderCommand.from(request,httpServletRequest));
 
     }
 }

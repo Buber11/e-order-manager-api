@@ -8,10 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,8 +33,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ModelAndView addOrder(OrderRequest request, HttpServletRequest httpServletRequest) {
-        ModelAndView modelAndView = new ModelAndView();
+    public ResponseEntity<?> addOrder(OrderRequest request, HttpServletRequest httpServletRequest) {
         long userId = (long) httpServletRequest.getAttribute("id");
 
         long clientId = clientRepository.getClinetIdByUserId(userId);
@@ -56,48 +57,48 @@ public class OrderServiceImpl implements OrderService {
 
                 orderNeo4jRepository.save(orderNeo4j);
                 System.out.println("Order and OrderNeo4j saved successfully with orderId: " + orderId);
+
+                return buildSuccessResponse("Order created successfully");
             } else {
                 System.err.println("Failed to save Order.");
-                modelAndView.setStatus(HttpStatus.BAD_REQUEST);
-                modelAndView.addObject("error","Failed to save Order.");
+                return buildErrorResponse(HttpStatus.BAD_REQUEST, "Failed to save Order.");
             }
         } catch (DataAccessException e) {
             System.err.println("Error occurred while saving Order: " + e.getMessage());
-            modelAndView.setStatus(HttpStatus.BAD_REQUEST);
-            modelAndView.addObject("error","Error occurred while saving Order: " + e.getMessage());
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, "Error occurred while saving Order: " + e.getMessage());
         }
-        modelAndView.setStatus(HttpStatusCode.valueOf(200));
-        return modelAndView;
     }
 
     @Override
-    public Optional<Order> getOrderById(Long id) {
-        return orderRepository.findById(id);
-    }
-
-    @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
-
-    @Override
-    public void deleteOrder(Long id) {
-
-        orderRepository.deleteById(id);
-    }
-
-    @Override
-    public List getClientOrders(long clientId){
+    public ResponseEntity<?> getClientOrders(long clientId) {
         List<Order> allByClientId = orderRepository.findAllByClientId(clientId);
 
-        return allByClientId.stream()
+        if (allByClientId.isEmpty()) {
+            return buildErrorResponse(HttpStatus.NOT_FOUND, "No orders found for this client");
+        }
+
+        List<OrderDtoView> orderDtoViews = allByClientId.stream()
                 .map(order -> OrderDtoView.builder()
                         .orderId(order.getOrderId())
                         .price(order.getPrice())
                         .purchaseDate(order.getPurchaseDate())
-                        .status(order.getStatus()).build()
-                        ).collect(Collectors.toList());
+                        .status(order.getStatus())
+                        .build())
+                .collect(Collectors.toList());
 
+        return buildSuccessResponse(orderDtoViews);
+    }
+
+    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(Map.of("error", message));
+    }
+
+    private <T> ResponseEntity<T> buildSuccessResponse(T t) {
+        return ResponseEntity.ok(t);
+    }
+
+    private ResponseEntity<Map<String, String>> buildSuccessResponse(String message) {
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
 }
