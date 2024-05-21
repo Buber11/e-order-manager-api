@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class DeleteUserCommand implements Command<ResponseEntity, UserService> {
+public class DeleteUserCommand implements Command<Void, UserService> {
 
     private final HttpServletRequest request;
 
@@ -19,7 +19,8 @@ public class DeleteUserCommand implements Command<ResponseEntity, UserService> {
     }
 
     @Override
-    public ResponseEntity execute(UserService userService) {
-        return userService.deleteUser(request);
+    public Void execute(UserService userService) {
+        userService.deleteUser(request);
+        return null;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
-public class SignUpCommand implements Command<ResponseEntity, AuthenticationService> {
+public class SignUpCommand implements Command<Void, AuthenticationService> {
 
     private final SignUpRequest request;
 
@@ -20,7 +20,8 @@ public class SignUpCommand implements Command<ResponseEntity, AuthenticationServ
     }
 
     @Override
-    public ResponseEntity execute(AuthenticationService authenticationService) {
-        return authenticationService.signup(request);
+    public Void execute(AuthenticationService authenticationService) {
+        authenticationService.signup(request);
+        return null;
     }
 }

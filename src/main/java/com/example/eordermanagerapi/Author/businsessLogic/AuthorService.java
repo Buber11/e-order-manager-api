@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface AuthorService {
 
-    ResponseEntity getAll();
-    ResponseEntity get(long authorId);
+    List<AuthorDTOView> getAllAuthors();
+    AuthorDTOView getAuthorById(long authorId);
 }

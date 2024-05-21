@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 //zmien order na orderDTO
-public class GetClientOrdersCommand implements Command<ResponseEntity, OrderService> {
+public class GetClientOrdersCommand implements Command<List<OrderDtoView>, OrderService> {
 
     private final long clientId;
 
@@ -20,7 +20,7 @@ public class GetClientOrdersCommand implements Command<ResponseEntity, OrderServ
         return new GetClientOrdersCommand(orderId);
     }
     @Override
-    public ResponseEntity execute(OrderService orderService) {
+    public List<OrderDtoView> execute(OrderService orderService) {
         return orderService.getClientOrders(clientId);
     }
 

@@ -6,7 +6,7 @@ import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
-public class ValidateSessionCommand implements Command<ResponseEntity, AuthenticationService> {
+public class ValidateSessionCommand implements Command<Boolean, AuthenticationService> {
 
     private final HttpServletRequest httpServletRequest;
 
@@ -18,7 +18,7 @@ public class ValidateSessionCommand implements Command<ResponseEntity, Authentic
     }
 
     @Override
-    public ResponseEntity execute(AuthenticationService authenticationService) {
+    public Boolean execute(AuthenticationService authenticationService) {
         return authenticationService.getValidateSession(httpServletRequest);
     }
 }

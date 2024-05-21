@@ -13,6 +13,7 @@ import com.example.eordermanagerapi.payload.response.UserInfoResponse;
 import com.example.eordermanagerapi.payload.response.ValidateSessionResponse;
 import com.example.eordermanagerapi.user.User;
 import com.example.eordermanagerapi.user.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,10 +37,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
-
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-
 
     public AuthenticationServiceImpl(UserRepository userRepository,
                                      TokenRepository tokenRepository,
@@ -53,35 +52,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public ResponseEntity<Map<String, String>> authenticate(AuthRequest input, HttpServletResponse httpServletResponse) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            input.email(),
-                            input.password()
-                    )
-            );
-        } catch (AuthenticationException e) {
-            return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials provided");
-        }
+    @Override
+    public void authenticate(AuthRequest input, HttpServletResponse httpServletResponse) throws AuthenticationException {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(input.email(), input.password())
+        );
 
-        Optional<User> userOpt = userRepository.findByEmail(input.email());
-        if (userOpt.isEmpty()) {
-            return buildErrorResponse(HttpStatus.NOT_FOUND, "User not found");
-        }
+        User user = userRepository.findByEmail(input.email())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        User user = userOpt.get();
         String jwtToken = jwtService.generateToken(Map.of("id", user.getUserId()), user);
         Cookie cookie = createJwtCookie(jwtToken);
         httpServletResponse.addCookie(cookie);
-
-        return buildSuccessResponse("Authentication successful");
     }
-    @Override
-    public ResponseEntity signup(SignUpRequest request) {
 
+    @Override
+    public void signup(SignUpRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            return buildErrorResponse(HttpStatus.BAD_REQUEST,"An account with this email already exists");
+            throw new IllegalStateException("An account with this email already exists");
         }
 
         User newUser = User.builder()
@@ -91,57 +79,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .password(passwordEncoder.encode(request.password()))
                 .build();
 
-        User savedUser = userRepository.save(newUser);
-
-        if (Long.valueOf(savedUser.getUserId()) != null) {
-            UserInfoResponse userInfoResponse = UserInfoResponse.builder()
-                    .email(savedUser.getEmail())
-                    .name(savedUser.getName())
-                    .surname(savedUser.getSurname())
-                    .build();
-
-            return buildSuccessResponse("account built succesfully");
-        } else {
-            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,"something went wrong");
-        }
+        userRepository.save(newUser);
     }
 
     @Override
-    public ResponseEntity getValidateSession(HttpServletRequest httpServletRequest) {
+    public boolean getValidateSession(HttpServletRequest httpServletRequest) {
         long userId = (long) httpServletRequest.getAttribute("id");
-
-        if(userRepository.existsById(userId)){
-            return buildSuccessResponse("Session is valid");
-        }else {
-            return buildSuccessResponse("Session is invalid");
-        }
-
+        return userRepository.existsById(userId);
     }
 
     @Override
-    public ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse httpServletResponse) {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse httpServletResponse) throws EntityNotFoundException {
         long userId = (long) request.getAttribute("id");
-        Optional<User> userOpt = userRepository.findById(userId);
 
-        if (userOpt.isEmpty()) {
-            return buildErrorResponse(HttpStatus.UNAUTHORIZED,"User not found");
-        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        User user = userOpt.get();
         String jwtToken = jwtService.generateToken(Map.of("id", userId), user);
-
         Cookie cookie = createJwtCookie(jwtToken);
         httpServletResponse.addCookie(cookie);
-
-        return buildSuccessResponse("Token refreshed successfully");
     }
 
     @Override
     public void logout(Cookie cookie) {
         String tokenStr = cookie.getValue();
         Token token = Token.builder()
-                        .token(tokenStr)
-                        .build();
+                .token(tokenStr)
+                .build();
         tokenRepository.save(token);
     }
 
@@ -153,13 +117,4 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         cookie.setMaxAge(5 * 3600);
         return cookie;
     }
-
-    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(Map.of("error", message));
-    }
-
-    private ResponseEntity<Map<String, String>> buildSuccessResponse(String message) {
-        return ResponseEntity.ok(Map.of("message", message));
-    }
-
 }

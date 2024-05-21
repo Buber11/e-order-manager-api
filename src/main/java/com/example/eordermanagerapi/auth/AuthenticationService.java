@@ -16,11 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Optional;
 
 public interface AuthenticationService {
-    ResponseEntity authenticate(AuthRequest input, HttpServletResponse httpServletResponse);
-    ResponseEntity signup(SignUpRequest request);
+    void authenticate(AuthRequest input, HttpServletResponse httpServletResponse);
+    void signup(SignUpRequest request);
 
-    ResponseEntity getValidateSession(HttpServletRequest httpServletRequest);
-    ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse response);
+    boolean getValidateSession(HttpServletRequest httpServletRequest);
+    void refreshToken(HttpServletRequest request, HttpServletResponse response);
     void logout(Cookie cookie);
 
 

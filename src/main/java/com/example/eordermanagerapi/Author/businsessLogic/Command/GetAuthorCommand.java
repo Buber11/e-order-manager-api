@@ -6,7 +6,7 @@ import com.example.eordermanagerapi.Fasada.Command;
 import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.http.ResponseEntity;
 
-public class GetAuthorCommand implements Command<ResponseEntity, AuthorService> {
+public class GetAuthorCommand implements Command<AuthorDTOView, AuthorService> {
 
     private final long authorId;
 
@@ -19,7 +19,7 @@ public class GetAuthorCommand implements Command<ResponseEntity, AuthorService> 
     }
 
     @Override
-    public ResponseEntity execute(AuthorService authorService) {
-        return authorService.get(authorId);
+    public AuthorDTOView execute(AuthorService authorService) {
+        return authorService.getAuthorById(authorId);
     }
 }

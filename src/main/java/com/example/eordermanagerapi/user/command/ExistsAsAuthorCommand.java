@@ -7,7 +7,7 @@ import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class ExistsAsAuthorCommand implements Command<ResponseEntity, UserService> {
+public class ExistsAsAuthorCommand implements Command<Boolean, UserService> {
 
     private final HttpServletRequest httpServletRequest;
 
@@ -18,7 +18,7 @@ public class ExistsAsAuthorCommand implements Command<ResponseEntity, UserServic
         return new ExistsAsAuthorCommand(httpServletRequest);
     }
     @Override
-    public ResponseEntity execute(UserService userService) {
+    public Boolean execute(UserService userService) {
         return userService.existsAsAuthor(httpServletRequest);
     }
 }

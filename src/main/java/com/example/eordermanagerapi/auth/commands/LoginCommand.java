@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class LoginCommand implements Command<ResponseEntity, AuthenticationService> {
+public class LoginCommand implements Command<Void, AuthenticationService> {
 
     private final AuthRequest request;
     private final HttpServletResponse httpServletResponse;
@@ -22,7 +22,8 @@ public class LoginCommand implements Command<ResponseEntity, AuthenticationServi
     }
 
     @Override
-    public ResponseEntity execute(AuthenticationService authenticationService) {
-        return authenticationService.authenticate(request,httpServletResponse);
+    public Void execute(AuthenticationService authenticationService) {
+        authenticationService.authenticate(request,httpServletResponse);
+        return null;
     }
 }

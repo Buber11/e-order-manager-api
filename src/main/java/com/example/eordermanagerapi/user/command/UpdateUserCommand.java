@@ -10,7 +10,7 @@ import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class UpdateUserCommand implements Command<ResponseEntity, UserService> {
+public class UpdateUserCommand implements Command<Void, UserService> {
 
     private final HttpServletRequest httpServletRequest;
     private final UserChangesRequest request;
@@ -30,7 +30,8 @@ public class UpdateUserCommand implements Command<ResponseEntity, UserService> {
     }
 
     @Override
-    public ResponseEntity execute(UserService userService) {
-        return userService.updateUser(httpServletRequest,httpServletResponse,request);
+    public Void execute(UserService userService) {
+        userService.updateUser(httpServletRequest,httpServletResponse,request);
+        return null;
     }
 }

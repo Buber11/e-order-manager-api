@@ -11,11 +11,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 public interface UserService {
 
-   ResponseEntity getUser(HttpServletRequest httpServletRequest);
+   UserInfoResponse getUser(HttpServletRequest httpServletRequest);
 
-   ResponseEntity deleteUser(HttpServletRequest httpServletRequest);
+   void deleteUser(HttpServletRequest httpServletRequest);
 
-   ResponseEntity updateUser(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, UserChangesRequest request);
-   ResponseEntity existsAsAuthor(HttpServletRequest httpServletRequest);
+   void updateUser(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, UserChangesRequest request);
+   boolean existsAsAuthor(HttpServletRequest httpServletRequest);
 
 }

@@ -48,17 +48,17 @@ public class Fasada {
     }
 //    authentication
 
-    public ResponseEntity handle(LoginCommand command){
+    public void handle(LoginCommand command){
+        command.execute(authenticationService);
+    }
+    public void handle(SignUpCommand command){
+        command.execute(authenticationService);
+    }
+    public boolean handle(ValidateSessionCommand command){
         return command.execute(authenticationService);
     }
-    public ResponseEntity handle(SignUpCommand command){
-        return command.execute(authenticationService);
-    }
-    public ResponseEntity handle(ValidateSessionCommand command){
-        return command.execute(authenticationService);
-    }
-    public ResponseEntity handle(RefreshTokenCommand command){
-        return command.execute(authenticationService);
+    public void handle(RefreshTokenCommand command){
+        command.execute(authenticationService);
     }
     public void handle(LogoutCommand command) {
         command.execute(authenticationService);
@@ -66,16 +66,16 @@ public class Fasada {
 
 //    user
 
-    public ResponseEntity handle(GetUserCommand command){
+    public UserInfoResponse handle(GetUserCommand command){
         return command.execute(userService);
     }
-    public ResponseEntity handle(DeleteUserCommand command){
-        return command.execute(userService);
+    public void handle(DeleteUserCommand command){
+        command.execute(userService);
     }
-    public ResponseEntity handle(UpdateUserCommand command){
-        return command.execute(userService);
+    public void handle(UpdateUserCommand command){
+         command.execute(userService);
     }
-    public ResponseEntity handle(ExistsAsAuthorCommand command){
+    public boolean handle(ExistsAsAuthorCommand command){
         return command.execute(userService);
     }
 
@@ -99,19 +99,18 @@ public class Fasada {
 
 //    author
 
-    public ResponseEntity handle(GetAllAuthorsCommand command){
+    public List<AuthorDTOView> handle(GetAllAuthorsCommand command){
         return command.execute(authorService);
     }
-    public ResponseEntity handle(GetAuthorCommand command){
+    public AuthorDTOView handle(GetAuthorCommand command){
         return command.execute(authorService);
     }
 
 //    order
-
-    public ResponseEntity handle(AddOrderCommand command){
+    public Void handle(AddOrderCommand command){
         return command.execute(orderService);
     }
-    public ResponseEntity handle(GetClientOrdersCommand command){
+    public List<OrderDtoView> handle(GetClientOrdersCommand command){
         return command.execute(orderService);
     }
 

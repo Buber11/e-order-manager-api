@@ -33,9 +33,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<?> addOrder(OrderRequest request, HttpServletRequest httpServletRequest) {
+    public void addOrder(OrderRequest request, HttpServletRequest httpServletRequest) throws DataAccessException {
         long userId = (long) httpServletRequest.getAttribute("id");
-
         long clientId = clientRepository.getClinetIdByUserId(userId);
 
         Order order = Order.builder()
@@ -43,41 +42,28 @@ public class OrderServiceImpl implements OrderService {
                 .price(request.price())
                 .clientId(clientId)
                 .build();
-        try {
-            Order createdOrder = orderRepository.save(order);
-            long orderId = createdOrder.getOrderId();
 
-            if (orderId > 0) {
-                OrderNeo4j orderNeo4j = OrderNeo4j.builder()
-                        .orderId(orderId)
-                        .status(OrderStatus.IN_PROGRESS.name())
-                        .price(request.price())
-                        .clientId(clientId)
-                        .build();
+        Order createdOrder = orderRepository.save(order);
+        long orderId = createdOrder.getOrderId();
 
-                orderNeo4jRepository.save(orderNeo4j);
-                System.out.println("Order and OrderNeo4j saved successfully with orderId: " + orderId);
-
-                return buildSuccessResponse("Order created successfully");
-            } else {
-                System.err.println("Failed to save Order.");
-                return buildErrorResponse(HttpStatus.BAD_REQUEST, "Failed to save Order.");
-            }
-        } catch (DataAccessException e) {
-            System.err.println("Error occurred while saving Order: " + e.getMessage());
-            return buildErrorResponse(HttpStatus.BAD_REQUEST, "Error occurred while saving Order: " + e.getMessage());
+        if (orderId > 0) {
+            OrderNeo4j orderNeo4j = OrderNeo4j.builder()
+                    .orderId(orderId)
+                    .status(OrderStatus.IN_PROGRESS.name())
+                    .price(request.price())
+                    .clientId(clientId)
+                    .build();
+            orderNeo4jRepository.save(orderNeo4j);
+            System.out.println("Order and OrderNeo4j saved successfully with orderId: " + orderId);
+        } else {
+            System.err.println("Failed to save Order.");
+            throw new DataAccessException("Failed to save Order.") {};
         }
     }
 
     @Override
-    public ResponseEntity<?> getClientOrders(long clientId) {
-        List<Order> allByClientId = orderRepository.findAllByClientId(clientId);
-
-        if (allByClientId.isEmpty()) {
-            return buildErrorResponse(HttpStatus.NOT_FOUND, "No orders found for this client");
-        }
-
-        List<OrderDtoView> orderDtoViews = allByClientId.stream()
+    public List<OrderDtoView> getClientOrders(long clientId) {
+        return orderRepository.findAllByClientId(clientId).stream()
                 .map(order -> OrderDtoView.builder()
                         .orderId(order.getOrderId())
                         .price(order.getPrice())
@@ -85,20 +71,5 @@ public class OrderServiceImpl implements OrderService {
                         .status(order.getStatus())
                         .build())
                 .collect(Collectors.toList());
-
-        return buildSuccessResponse(orderDtoViews);
     }
-
-    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(Map.of("error", message));
-    }
-
-    private <T> ResponseEntity<T> buildSuccessResponse(T t) {
-        return ResponseEntity.ok(t);
-    }
-
-    private ResponseEntity<Map<String, String>> buildSuccessResponse(String message) {
-        return ResponseEntity.ok(Map.of("message", message));
-    }
-
 }

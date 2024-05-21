@@ -6,7 +6,7 @@ import com.example.eordermanagerapi.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
-public class GetUserCommand implements Command<ResponseEntity, UserService> {
+public class GetUserCommand implements Command<UserInfoResponse, UserService> {
 
     private final HttpServletRequest httpServletRequest;
 
@@ -19,7 +19,7 @@ public class GetUserCommand implements Command<ResponseEntity, UserService> {
     }
 
     @Override
-    public ResponseEntity execute(UserService userService) {
+    public UserInfoResponse execute(UserService userService) {
         return userService.getUser(httpServletRequest);
     }
 }

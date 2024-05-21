@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class AddOrderCommand implements Command<ResponseEntity, OrderService> {
+public class AddOrderCommand implements Command<Void, OrderService> {
 
     private OrderRequest request;
     private HttpServletRequest httpServletRequest;
@@ -21,7 +21,8 @@ public class AddOrderCommand implements Command<ResponseEntity, OrderService> {
     }
 
     @Override
-    public ResponseEntity execute(OrderService orderService) {
-        return orderService.addOrder(request,httpServletRequest);
+    public Void execute(OrderService orderService) {
+        orderService.addOrder(request,httpServletRequest);
+        return null;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public class GetAllAuthorsCommand implements Command<ResponseEntity, AuthorService> {
+public class GetAllAuthorsCommand implements Command<List<AuthorDTOView>, AuthorService> {
 
     private GetAllAuthorsCommand() {
     }
@@ -18,7 +18,7 @@ public class GetAllAuthorsCommand implements Command<ResponseEntity, AuthorServi
     }
 
     @Override
-    public ResponseEntity execute(AuthorService authorService) {
-        return authorService.getAll();
+    public List<AuthorDTOView> execute(AuthorService authorService) {
+        return authorService.getAllAuthors();
     }
 }

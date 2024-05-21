@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class RefreshTokenCommand implements Command<ResponseEntity, AuthenticationService> {
+public class RefreshTokenCommand implements Command<Void, AuthenticationService> {
 
     private HttpServletResponse responsehttp;
     private HttpServletRequest request;
@@ -22,7 +22,8 @@ public class RefreshTokenCommand implements Command<ResponseEntity, Authenticati
     }
 
     @Override
-    public ResponseEntity execute(AuthenticationService authenticationService) {
-        return authenticationService.refreshToken(request,responsehttp);
+    public Void execute(AuthenticationService authenticationService) {
+        authenticationService.refreshToken(request,responsehttp);
+        return null;
     }
 }
