@@ -18,16 +18,29 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Controller class for handling author-related API endpoints.
+ */
 @RestController
 @RequestMapping("/api/author")
 public class AuthorController {
 
     private final Fasada fasada;
 
+    /**
+     * Constructs a new AuthorController with the specified Fasada.
+     *
+     * @param fasada The Fasada instance to use for handling author-related commands.
+     */
     public AuthorController(Fasada fasada) {
         this.fasada = fasada;
     }
 
+    /**
+     * Retrieves all authors.
+     *
+     * @return ResponseEntity containing a list of AuthorDTOView objects if successful, otherwise an error response.
+     */
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
         try {
@@ -38,6 +51,12 @@ public class AuthorController {
         }
     }
 
+    /**
+     * Retrieves an author by ID.
+     *
+     * @param authorId The ID of the author to retrieve.
+     * @return ResponseEntity containing the AuthorDTOView object if successful, otherwise an error response.
+     */
     @GetMapping("/get")
     public ResponseEntity<?> get(@RequestParam(name = "id") long authorId) {
         try {
@@ -50,6 +69,13 @@ public class AuthorController {
         }
     }
 
+    /**
+     * Builds an error response.
+     *
+     * @param status  The HTTP status of the error response.
+     * @param message The error message to include in the response body.
+     * @return ResponseEntity containing the error response.
+     */
     private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(Map.of("error", message));
     }

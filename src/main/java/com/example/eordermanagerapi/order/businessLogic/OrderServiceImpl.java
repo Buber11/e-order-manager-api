@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void addOrder(OrderRequest request, HttpServletRequest httpServletRequest) throws DataAccessException {
         long userId = (long) httpServletRequest.getAttribute("id");
-        long clientId = clientRepository.getClinetIdByUserId(userId);
+        long clientId = clientRepository.getClientIdByUserId(userId);
 
         Order order = Order.builder()
                 .status(OrderStatus.IN_PROGRESS)

@@ -10,6 +10,8 @@ import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.EbookRepository;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -23,54 +25,92 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for Ebook-related operations.
+ */
 @Service
 @Cacheable(cacheNames = "ebook")
 public class EbookServiceImpl implements EbookService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EbookServiceImpl.class);
+
     private final EbookRepository ebookRepository;
     private final AuthorRepository authorRepository;
 
+    /**
+     * Constructor for EbookServiceImpl.
+     * @param ebookRepository The repository for Ebook entities.
+     * @param authorRepository The repository for Author entities.
+     */
     public EbookServiceImpl(EbookRepository ebookRepository, AuthorRepository authorRepository) {
         this.ebookRepository = ebookRepository;
         this.authorRepository = authorRepository;
     }
 
+    /**
+     * Retrieve all ebooks.
+     * @return List of EbookDTOView containing all ebooks.
+     */
     @Override
-    @Cacheable(value = "ebooks",key = "'allBooks'")
-    public List<EbookDTOView> getAllBooks(){
+    @Cacheable(value = "ebooks", key = "'allBooks'")
+    public List<EbookDTOView> getAllBooks() {
+        logger.info("Retrieving all ebooks");
         List<Ebook> ebooks = ebookRepository.findAll();
         return ebooks.stream()
                 .map(this::mapToEbookDTOView)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieve an ebook by ID.
+     * @param ebookId The ID of the ebook to retrieve.
+     * @return EbookDTOView containing the ebook details.
+     * @throws EntityNotFoundException If the ebook with the given ID is not found.
+     */
     @Override
-    @Cacheable(value = "ebook",key = "#ebookId")
-    public EbookDTOView getEbook(long ebookId){
+    @Cacheable(value = "ebook", key = "#ebookId")
+    public EbookDTOView getEbook(long ebookId) {
+        logger.info("Retrieving ebook with ID: {}", ebookId);
         return ebookRepository.findById(ebookId)
                 .map(this::mapToEbookDTOView)
                 .orElseThrow(() -> new EntityNotFoundException("Ebook not found"));
     }
 
+    /**
+     * Retrieve the most popular ebooks.
+     * @param amount The number of popular ebooks to retrieve.
+     * @return List of EbookDTOView containing the most popular ebooks.
+     */
     @Override
-    public List<EbookDTOView> getTheMostPopular(int amount){
+    public List<EbookDTOView> getTheMostPopular(int amount) {
+        logger.info("Retrieving the most popular ebooks");
         List<Ebook> ebooks = ebookRepository.getTopEbooks(PageRequest.of(0, amount));
         return ebooks.stream()
                 .map(this::mapToEbookDTOView)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieve ebooks in alphabetical order.
+     * @return List of EbookDTOView containing ebooks in alphabetical order.
+     */
     @Override
-    public List<EbookDTOView> getEbooksAlphabetical(){
+    public List<EbookDTOView> getEbooksAlphabetical() {
+        logger.info("Retrieving ebooks in alphabetical order");
         List<Ebook> ebooks = ebookRepository.getEbooksAlphabeticalOrder();
         return ebooks.stream()
                 .map(this::mapToEbookDTOView)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Add a new ebook.
+     * @param request The request containing ebook details.
+     */
     @Override
     @CacheEvict(value = "ebooks", allEntries = true)
     public void addEbook(EbookRequest request) {
+        logger.info("Adding a new ebook");
         Ebook ebook = Ebook.builder()
                 .title(request.title())
                 .tag(request.tag())
@@ -92,7 +132,7 @@ public class EbookServiceImpl implements EbookService {
 
         ebook.setAdditionalContent(additionalContents);
         ebookRepository.save(ebook);
-
+        logger.info("Ebook added successfully");
     }
 
     private EbookDTOView mapToEbookDTOView(Ebook ebook) {
@@ -135,14 +175,4 @@ public class EbookServiceImpl implements EbookService {
                 .orElseThrow(() -> new RuntimeException("Author with id " + authorId + " not found"));
     }
 
-    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(Map.of("error", message));
-    }
-
-    private <T> ResponseEntity buildSuccessResponse(T t) {
-        return ResponseEntity.ok(t);
-    }
-    private  ResponseEntity buildSuccessResponse(String message) {
-        return ResponseEntity.ok(Map.of("message",message));
-    }
 }

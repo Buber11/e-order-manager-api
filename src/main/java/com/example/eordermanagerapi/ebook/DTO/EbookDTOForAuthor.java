@@ -2,6 +2,9 @@ package com.example.eordermanagerapi.ebook.DTO;
 
 import lombok.*;
 
+/**
+ * Data transfer object (DTO) for representing ebook details in the context of an author.
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

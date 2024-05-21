@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller class for handling ebook-related HTTP requests.
+ */
 @RestController
 @RequestMapping("/api/ebook")
 public class EbookController {
@@ -31,6 +34,12 @@ public class EbookController {
         this.fasada = fasada;
     }
 
+    /**
+     * Retrieves the most popular ebooks.
+     *
+     * @param amount The number of ebooks to retrieve.
+     * @return ResponseEntity containing a list of EbookDTOView objects.
+     */
     @GetMapping("/get-the-most-popular")
     public ResponseEntity<?> getTheMostPopular(@RequestParam(name ="amount") int amount) {
         try {
@@ -45,6 +54,11 @@ public class EbookController {
         }
     }
 
+    /**
+     * Retrieves ebooks in alphabetical order.
+     *
+     * @return ResponseEntity containing a list of EbookDTOView objects.
+     */
     @GetMapping("/get-alphabetical")
     public ResponseEntity<?> getAlphabetical() {
         try {
@@ -55,6 +69,11 @@ public class EbookController {
         }
     }
 
+    /**
+     * Retrieves all ebooks.
+     *
+     * @return ResponseEntity containing a list of EbookDTOView objects.
+     */
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllEbooks() {
         try {
@@ -65,6 +84,12 @@ public class EbookController {
         }
     }
 
+    /**
+     * Retrieves a specific ebook by its ID.
+     *
+     * @param ebookId The ID of the ebook to retrieve.
+     * @return ResponseEntity containing the EbookDTOView object.
+     */
     @GetMapping("/get")
     public ResponseEntity<?> getEbook(@RequestParam("id") Long ebookId) {
         try {
@@ -77,6 +102,13 @@ public class EbookController {
         }
     }
 
+    /**
+     * Adds a new ebook.
+     *
+     * @param request       The EbookRequest object containing the details of the new ebook.
+     * @param bindingResult The result of the validation process.
+     * @return ResponseEntity indicating the success or failure of the operation.
+     */
     @PostMapping("/add")
     public ResponseEntity<?> addEbook(@Valid @RequestBody EbookRequest request,
                                       BindingResult bindingResult) {

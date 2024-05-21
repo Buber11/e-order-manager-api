@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 
 import java.io.Serializable;
 import java.util.List;
+/**
+ * Data transfer object (DTO) for representing ebook details.
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
