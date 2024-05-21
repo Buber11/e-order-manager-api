@@ -6,7 +6,7 @@ import com.example.eordermanagerapi.payload.request.EbookRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
-public class AddEbookCommnad implements Command<ResponseEntity, EbookService> {
+public class AddEbookCommnad implements Command<Void, EbookService> {
 
     private EbookRequest request;
 
@@ -19,7 +19,8 @@ public class AddEbookCommnad implements Command<ResponseEntity, EbookService> {
     }
 
     @Override
-    public ResponseEntity execute(EbookService ebookService) {
-        return ebookService.addEbook(request);
+    public Void execute(EbookService ebookService) {
+         ebookService.addEbook(request);
+         return null;
     }
 }

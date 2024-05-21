@@ -5,7 +5,7 @@ import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.EbookService;
 import org.springframework.http.ResponseEntity;
 
-public class GetEbookCommand implements Command<ResponseEntity, EbookService> {
+public class GetEbookCommand implements Command<EbookDTOView, EbookService> {
 
     private final long ebookId;
 
@@ -18,7 +18,7 @@ public class GetEbookCommand implements Command<ResponseEntity, EbookService> {
     }
 
     @Override
-    public ResponseEntity execute(EbookService ebookService) {
+    public EbookDTOView execute(EbookService ebookService) {
         return ebookService.getEbook(ebookId);
     }
 }

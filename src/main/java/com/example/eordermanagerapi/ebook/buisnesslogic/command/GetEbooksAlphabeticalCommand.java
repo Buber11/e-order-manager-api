@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public class GetEbooksAlphabeticalCommand implements Command<ResponseEntity, EbookService> {
+public class GetEbooksAlphabeticalCommand implements Command<List<EbookDTOView>, EbookService> {
 
     private GetEbooksAlphabeticalCommand() {
     }
@@ -16,7 +16,7 @@ public class GetEbooksAlphabeticalCommand implements Command<ResponseEntity, Ebo
     }
 
     @Override
-    public ResponseEntity execute(EbookService ebookService) {
+    public List<EbookDTOView> execute(EbookService ebookService) {
         return ebookService.getEbooksAlphabetical();
     }
 }

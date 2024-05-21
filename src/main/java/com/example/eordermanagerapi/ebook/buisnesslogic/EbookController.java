@@ -4,9 +4,12 @@ import com.example.eordermanagerapi.Fasada.Fasada;
 import com.example.eordermanagerapi.ebook.Ebook;
 import com.example.eordermanagerapi.ebook.DTO.EbookDTOView;
 import com.example.eordermanagerapi.ebook.buisnesslogic.command.*;
+import com.example.eordermanagerapi.order.businessLogic.Command.AddOrderCommand;
 import com.example.eordermanagerapi.payload.request.EbookRequest;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -29,45 +32,88 @@ public class EbookController {
     }
 
     @GetMapping("/get-the-most-popular")
-    public ResponseEntity getTheMostPopular(@RequestParam(name ="amount")int amount){
-        if(amount >= 0){
-            return fasada.handle(GetTheMostPopularEbookCommand.from(amount));
-        }else {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> getTheMostPopular(@RequestParam(name ="amount") int amount) {
+        try {
+            if (amount >= 0) {
+                List<EbookDTOView> ebooks = fasada.handle(GetTheMostPopularEbookCommand.from(amount));
+                return buildSuccessResponse(ebooks);
+            } else {
+                return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid amount");
+            }
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching the most popular ebooks.");
         }
     }
 
     @GetMapping("/get-alphabetical")
-    public ResponseEntity getAlphabetical(){
-        return fasada.handle(GetEbooksAlphabeticalCommand.from());
+    public ResponseEntity<?> getAlphabetical() {
+        try {
+            List<EbookDTOView> ebooks = fasada.handle(GetEbooksAlphabeticalCommand.from());
+            return buildSuccessResponse(ebooks);
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching ebooks.");
+        }
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity getAllEbooks(){
-        return fasada.handle(GetAllEbooksCommand.from());
+    public ResponseEntity<?> getAllEbooks() {
+        try {
+            List<EbookDTOView> ebooks = fasada.handle(GetAllEbooksCommand.from());
+            return buildSuccessResponse(ebooks);
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching ebooks. " + e.getMessage());
+        }
     }
 
     @GetMapping("/get")
-    public ResponseEntity getEbook(@RequestParam("id") Long ebookId){
-       return fasada.handle(GetEbookCommand.from(ebookId));
+    public ResponseEntity<?> getEbook(@RequestParam("id") Long ebookId) {
+        try {
+            EbookDTOView ebook = fasada.handle(GetEbookCommand.from(ebookId));
+            return buildSuccessResponse(ebook);
+        } catch (EntityNotFoundException e) {
+            return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while fetching the ebook.");
+        }
     }
 
     @PostMapping("/add")
-    public ResponseEntity addEbook(@Valid @RequestBody EbookRequest request,
-                                   BindingResult bindingResult
-    ){
+    public ResponseEntity<?> addEbook(@Valid @RequestBody EbookRequest request,
+                                      BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-
             Map<String, String> errorsMap = new HashMap<>();
-
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 errorsMap.put(fieldError.getField(), fieldError.getDefaultMessage());
             }
-            return ResponseEntity.badRequest().body(errorsMap);
-
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation errors", errorsMap);
         }
-        return fasada.handle(AddEbookCommnad.from(request));
+
+        try {
+            fasada.handle(AddEbookCommnad.from(request));
+            return buildSuccessResponse("The ebook has been added");
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while adding the ebook: " + e.getMessage());
+        }
     }
 
+    private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(Map.of("error", message));
+    }
 
+    private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message, Map<String, String> validationErrors) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("error", message);
+        errorResponse.put("validationErrors", validationErrors);
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
+    private <T> ResponseEntity<T> buildSuccessResponse(T body) {
+        return ResponseEntity.ok(body);
+    }
+
+    private ResponseEntity<Map<String, String>> buildSuccessResponse(String message) {
+        return ResponseEntity.ok(Map.of("message", message));
+    }
 }
+
+

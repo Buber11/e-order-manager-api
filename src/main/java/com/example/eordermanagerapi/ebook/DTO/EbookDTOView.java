@@ -6,12 +6,13 @@ import com.example.eordermanagerapi.additionalContent.AdditionalContentDTOView;
 import lombok.*;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 
+import java.io.Serializable;
 import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EbookDTOView {
+public class EbookDTOView implements Serializable {
     private Long id;
     private String image;
     private String title;

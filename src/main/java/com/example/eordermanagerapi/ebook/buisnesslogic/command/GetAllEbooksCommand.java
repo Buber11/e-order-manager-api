@@ -8,14 +8,14 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public class GetAllEbooksCommand implements Command<ResponseEntity, EbookService> {
+public class GetAllEbooksCommand implements Command<List<EbookDTOView>, EbookService> {
 
     public static GetAllEbooksCommand from(){
         return new GetAllEbooksCommand();
     }
 
     @Override
-    public ResponseEntity execute(EbookService ebookService) {
+    public List<EbookDTOView> execute(EbookService ebookService) {
         return ebookService.getAllBooks();
     }
 }

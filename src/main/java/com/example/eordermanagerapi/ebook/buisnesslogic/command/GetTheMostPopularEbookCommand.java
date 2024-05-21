@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public class GetTheMostPopularEbookCommand implements Command<ResponseEntity, EbookService> {
+public class GetTheMostPopularEbookCommand implements Command<List<EbookDTOView>, EbookService> {
 
     private final int amount;
 
@@ -19,7 +19,7 @@ public class GetTheMostPopularEbookCommand implements Command<ResponseEntity, Eb
     }
 
     @Override
-    public ResponseEntity execute(EbookService ebookService) {
+    public List<EbookDTOView> execute(EbookService ebookService) {
         return ebookService.getTheMostPopular(amount);
     }
 }

@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface EbookService {
 
-    ResponseEntity getAllBooks();
-    ResponseEntity getEbook(long ebookId);
-    ResponseEntity getTheMostPopular(int amount);
-    ResponseEntity getEbooksAlphabetical();
+    List<EbookDTOView> getAllBooks();
+    EbookDTOView getEbook(long ebookId);
+    List<EbookDTOView> getTheMostPopular(int amount);
+    List<EbookDTOView> getEbooksAlphabetical();
 
-    ResponseEntity addEbook(EbookRequest request);
+    void addEbook(EbookRequest request);
 
 
 }

@@ -81,19 +81,19 @@ public class Fasada {
 
 //    ebook
 
-    public ResponseEntity handle(GetAllEbooksCommand command){
+    public List<EbookDTOView> handle(GetAllEbooksCommand command){
         return command.execute(ebookService);
     }
-    public ResponseEntity handle(GetEbookCommand command){
+    public EbookDTOView handle(GetEbookCommand command){
         return command.execute(ebookService);
     }
-    public ResponseEntity handle(GetTheMostPopularEbookCommand command){
+    public List<EbookDTOView> handle(GetTheMostPopularEbookCommand command){
         return command.execute(ebookService);
     }
-    public ResponseEntity handle(GetEbooksAlphabeticalCommand command){
+    public List<EbookDTOView> handle(GetEbooksAlphabeticalCommand command){
         return command.execute(ebookService);
     }
-    public ResponseEntity handle(AddEbookCommnad commnad){
+    public Void handle(AddEbookCommnad commnad){
         return commnad.execute(ebookService);
     }
 
