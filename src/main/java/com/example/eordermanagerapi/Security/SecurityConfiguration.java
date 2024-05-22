@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -52,9 +53,9 @@ public class SecurityConfiguration {
         httpSecurity
                 .authorizeHttpRequests(e -> e
                         .requestMatchers(endpoints).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() )
+                        .sessionManagement(e-> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        );
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                         .authenticationProvider(authenticationProvider)
                         .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);

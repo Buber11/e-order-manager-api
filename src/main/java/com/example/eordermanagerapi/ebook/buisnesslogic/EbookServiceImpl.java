@@ -69,9 +69,7 @@ public class EbookServiceImpl implements EbookService {
      */
     @Override
     public EbookDTOView getEbook(long ebookId) {
-        System.out.println("weszło");
         logger.info("Retrieving ebook with ID: {}", ebookId);
-        
         return ebookRepository.findById(ebookId)
                 .map(this::mapToEbookDTOView)
                 .orElseThrow(() -> new EntityNotFoundException("Ebook not found"));
