@@ -128,6 +128,54 @@ public class EbookController {
         }
     }
 
+    /**
+     * Searches ebooks by title.
+     *
+     * @param titleQuery The query string to search for in titles.
+     * @return ResponseEntity containing the search results.
+     */
+    @GetMapping("/searchTitle")
+    public ResponseEntity<?> searchBooksByTitle(@RequestParam("query") String titleQuery) {
+        try {
+            List<EbookDTOView> searchResults = fasada.handle(SearchTitleCommand.from(titleQuery));
+            return buildSuccessResponse(searchResults);
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while searching ebooks by title: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Searches ebooks by author.
+     *
+     * @param authorQuery The query string to search for in author names.
+     * @return ResponseEntity containing the search results.
+     */
+    @GetMapping("/searchAuthor")
+    public ResponseEntity<?> searchBooksByAuthor(@RequestParam("query") String authorQuery) {
+        try {
+            List<EbookDTOView> searchResults = fasada.handle(SearchAuthorCommand.from(authorQuery));
+            return buildSuccessResponse(searchResults);
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while searching ebooks by author: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Searches ebooks by tag.
+     *
+     * @param tagQuery The query string to search for in tags.
+     * @return ResponseEntity containing the search results.
+     */
+    @GetMapping("/searchTag")
+    public ResponseEntity<?> searchBooksByTag(@RequestParam("query") String tagQuery) {
+        try {
+            List<EbookDTOView> searchResults = fasada.handle(SearchTagCommand.from(tagQuery));
+            return buildSuccessResponse(searchResults);
+        } catch (Exception e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while searching ebooks by tag: " + e.getMessage());
+        }
+    }
+
     private ResponseEntity<Map<String, String>> buildErrorResponse(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(Map.of("error", message));
     }

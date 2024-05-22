@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * Service implementation for Ebook-related operations.
  */
 @Service
-@Cacheable(cacheNames = "ebook")
+//@Cacheable(cacheNames = "ebook")
 public class EbookServiceImpl implements EbookService {
 
     private static final Logger logger = LoggerFactory.getLogger(EbookServiceImpl.class);
@@ -68,9 +68,10 @@ public class EbookServiceImpl implements EbookService {
      * @throws EntityNotFoundException If the ebook with the given ID is not found.
      */
     @Override
-    @Cacheable(value = "ebook", key = "#ebookId")
     public EbookDTOView getEbook(long ebookId) {
+        System.out.println("weszło");
         logger.info("Retrieving ebook with ID: {}", ebookId);
+        
         return ebookRepository.findById(ebookId)
                 .map(this::mapToEbookDTOView)
                 .orElseThrow(() -> new EntityNotFoundException("Ebook not found"));
@@ -134,6 +135,34 @@ public class EbookServiceImpl implements EbookService {
         ebookRepository.save(ebook);
         logger.info("Ebook added successfully");
     }
+
+    @Override
+    public List<EbookDTOView> searchBooksByTitle(String titleQuery) {
+        logger.info("Searching ebooks by title: {}", titleQuery);
+        List<Ebook> ebooks = ebookRepository.findByTitleContainingIgnoreCase(titleQuery);
+        return ebooks.stream()
+                .map(this::mapToEbookDTOView)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EbookDTOView> searchBooksByAuthor(String authorQuery) {
+        logger.info("Searching ebooks by author: {}", authorQuery);
+        List<Ebook> ebooks = ebookRepository.findByAuthorsUserSurnameContainingIgnoreCase(authorQuery);
+        return ebooks.stream()
+                .map(this::mapToEbookDTOView)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EbookDTOView> searchBooksByTag(String tagQuery) {
+        logger.info("Searching ebooks by tag: {}", tagQuery);
+        List<Ebook> ebooks = ebookRepository.findByTagContainingIgnoreCase(tagQuery);
+        return ebooks.stream()
+                .map(this::mapToEbookDTOView)
+                .collect(Collectors.toList());
+    }
+
 
     private EbookDTOView mapToEbookDTOView(Ebook ebook) {
         return EbookDTOView.builder()

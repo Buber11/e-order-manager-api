@@ -28,7 +28,7 @@ public class UserController {
         this.fasada = fasada;
     }
 
-    @GetMapping
+    @GetMapping("/getInfo")
     public ResponseEntity<?> getUser(HttpServletRequest httpServletRequest) {
         try {
             UserInfoResponse userInfo = fasada.handle(GetUserCommand.from(httpServletRequest));
@@ -40,7 +40,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(HttpServletRequest request) {
         try {
             fasada.handle(DeleteUserCommand.from(request));
@@ -52,7 +52,7 @@ public class UserController {
         }
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<?> updateUser(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         @RequestBody UserChangesRequest request) {

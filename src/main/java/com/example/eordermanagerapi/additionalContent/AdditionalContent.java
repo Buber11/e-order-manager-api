@@ -28,7 +28,6 @@ public class AdditionalContent {
     /** The Ebook associated with this additional content. */
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_ebook")
-    @JsonIgnore
     private Ebook ebook;
 
     /** The URL of the additional content. */

@@ -50,4 +50,28 @@ public interface EbookService {
      * @param request The EbookRequest object containing the details of the new ebook.
      */
     void addEbook(EbookRequest request);
+
+    /**
+     * Searches ebooks by title.
+     *
+     * @param titleQuery The query string to search for in titles.
+     * @return List of EbookDTOView objects representing ebooks matching the title query.
+     */
+    List<EbookDTOView> searchBooksByTitle(String titleQuery);
+
+    /**
+     * Searches ebooks by author.
+     *
+     * @param authorQuery The query string to search for in authors.
+     * @return List of EbookDTOView objects representing ebooks written by authors matching the query.
+     */
+    List<EbookDTOView> searchBooksByAuthor(String authorQuery);
+
+    /**
+     * Searches ebooks by tag.
+     *
+     * @param tagQuery The query string to search for in tags.
+     * @return List of EbookDTOView objects representing ebooks with tags matching the query.
+     */
+    List<EbookDTOView> searchBooksByTag(String tagQuery);
 }

@@ -96,6 +96,17 @@ public class Fasada {
     public Void handle(AddEbookCommnad commnad){
         return commnad.execute(ebookService);
     }
+    public List<EbookDTOView> handle(SearchTitleCommand command) {
+        return command.execute(ebookService);
+    }
+
+    public List<EbookDTOView> handle(SearchAuthorCommand command) {
+        return command.execute(ebookService);
+    }
+
+    public List<EbookDTOView> handle(SearchTagCommand command) {
+        return command.execute(ebookService);
+    }
 
 //    author
 

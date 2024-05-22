@@ -10,16 +10,30 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+    String[] endpoints = {
+
+            "api/auth/login",
+            "api/auth/signup",
+            "api/ebook/getAll",
+            "api/ebook/get",
+            "api/ebook/searchTag",
+            "api/ebook/searchTitle",
+            "api/ebook/searchAuthor"
+
+    };
 
 
     private final AuthenticationProvider authenticationProvider;
@@ -37,7 +51,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(e -> e
-                        .requestMatchers("api/auth/login", "api/auth/signup","api/ebook/getAll","api/ebook/get").permitAll()
+                        .requestMatchers(endpoints).permitAll()
                         .anyRequest().authenticated()
 
         );
