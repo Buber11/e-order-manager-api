@@ -54,12 +54,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(e -> e
                         .requestMatchers(endpoints).permitAll()
                         .anyRequest().authenticated() )
-                        .sessionManagement(e-> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                        .formLogin(httpSecurityFormLoginConfigurer ->
-                                    httpSecurityFormLoginConfigurer
-                                            .loginProcessingUrl("http://localhost:5173/login")
-                                            .permitAll()
-                        );
+                        .sessionManagement(e-> e.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 
         httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
